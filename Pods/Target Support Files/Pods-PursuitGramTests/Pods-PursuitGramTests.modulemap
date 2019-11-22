@@ -1,0 +1,6 @@
+framework module Pods_PursuitGramTests {
+  umbrella header "Pods-PursuitGramTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
