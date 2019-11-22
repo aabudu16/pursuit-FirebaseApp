@@ -11,11 +11,14 @@
 		5E6B7385317E471D1EF712CB /* Pods_PursuitGram.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B50DE2E906C2AF7860BBCE3F /* Pods_PursuitGram.framework */; };
 		858A989723886F850051AF45 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A989623886F850051AF45 /* AppDelegate.swift */; };
 		858A989923886F850051AF45 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A989823886F850051AF45 /* SceneDelegate.swift */; };
-		858A989B23886F850051AF45 /* PursuitGramViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A989A23886F850051AF45 /* PursuitGramViewController.swift */; };
+		858A989B23886F850051AF45 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A989A23886F850051AF45 /* LoginViewController.swift */; };
 		858A989E23886F850051AF45 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 858A989C23886F850051AF45 /* Main.storyboard */; };
 		858A98A023886F890051AF45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 858A989F23886F890051AF45 /* Assets.xcassets */; };
 		858A98A323886F890051AF45 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 858A98A123886F890051AF45 /* LaunchScreen.storyboard */; };
 		858A98AE23886F890051AF45 /* PursuitGramTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98AD23886F890051AF45 /* PursuitGramTests.swift */; };
+		858A98B92388796E0051AF45 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 858A98B82388796E0051AF45 /* GoogleService-Info.plist */; };
+		858A98BD238879F00051AF45 /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98BB238879F00051AF45 /* FirebaseAuthService.swift */; };
+		858A98BE238879F00051AF45 /* FirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98BC238879F00051AF45 /* FirebaseService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,7 +37,7 @@
 		858A989323886F850051AF45 /* PursuitGram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PursuitGram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		858A989623886F850051AF45 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		858A989823886F850051AF45 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		858A989A23886F850051AF45 /* PursuitGramViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PursuitGramViewController.swift; sourceTree = "<group>"; };
+		858A989A23886F850051AF45 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		858A989D23886F850051AF45 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		858A989F23886F890051AF45 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		858A98A223886F890051AF45 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -42,6 +45,9 @@
 		858A98A923886F890051AF45 /* PursuitGramTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PursuitGramTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		858A98AD23886F890051AF45 /* PursuitGramTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PursuitGramTests.swift; sourceTree = "<group>"; };
 		858A98AF23886F890051AF45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		858A98B82388796E0051AF45 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
+		858A98BB238879F00051AF45 /* FirebaseAuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
+		858A98BC238879F00051AF45 /* FirebaseService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseService.swift; sourceTree = "<group>"; };
 		B13732B3A36DB025A328B0CA /* Pods_PursuitGramTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PursuitGramTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B50DE2E906C2AF7860BBCE3F /* Pods_PursuitGram.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PursuitGram.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7E43DBCE3E16B1E7C73B862 /* Pods-PursuitGram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PursuitGram.release.xcconfig"; path = "Target Support Files/Pods-PursuitGram/Pods-PursuitGram.release.xcconfig"; sourceTree = "<group>"; };
@@ -81,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				858A989523886F850051AF45 /* PursuitGram */,
+				858A98BA238879F00051AF45 /* Firebase */,
 				858A98AC23886F890051AF45 /* PursuitGramTests */,
 				858A989423886F850051AF45 /* Products */,
 				DA4919A80C613ABEA6120093 /* Pods */,
@@ -102,11 +109,12 @@
 			children = (
 				858A989623886F850051AF45 /* AppDelegate.swift */,
 				858A989823886F850051AF45 /* SceneDelegate.swift */,
-				858A989A23886F850051AF45 /* PursuitGramViewController.swift */,
+				858A989A23886F850051AF45 /* LoginViewController.swift */,
 				858A989C23886F850051AF45 /* Main.storyboard */,
 				858A989F23886F890051AF45 /* Assets.xcassets */,
 				858A98A123886F890051AF45 /* LaunchScreen.storyboard */,
 				858A98A423886F890051AF45 /* Info.plist */,
+				858A98B82388796E0051AF45 /* GoogleService-Info.plist */,
 			);
 			path = PursuitGram;
 			sourceTree = "<group>";
@@ -118,6 +126,15 @@
 				858A98AF23886F890051AF45 /* Info.plist */,
 			);
 			path = PursuitGramTests;
+			sourceTree = "<group>";
+		};
+		858A98BA238879F00051AF45 /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				858A98BB238879F00051AF45 /* FirebaseAuthService.swift */,
+				858A98BC238879F00051AF45 /* FirebaseService.swift */,
+			);
+			path = Firebase;
 			sourceTree = "<group>";
 		};
 		DA4919A80C613ABEA6120093 /* Pods */ = {
@@ -216,6 +233,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				858A98A323886F890051AF45 /* LaunchScreen.storyboard in Resources */,
+				858A98B92388796E0051AF45 /* GoogleService-Info.plist in Resources */,
 				858A98A023886F890051AF45 /* Assets.xcassets in Resources */,
 				858A989E23886F850051AF45 /* Main.storyboard in Resources */,
 			);
@@ -299,7 +317,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				858A989B23886F850051AF45 /* PursuitGramViewController.swift in Sources */,
+				858A98BD238879F00051AF45 /* FirebaseAuthService.swift in Sources */,
+				858A98BE238879F00051AF45 /* FirebaseService.swift in Sources */,
+				858A989B23886F850051AF45 /* LoginViewController.swift in Sources */,
 				858A989723886F850051AF45 /* AppDelegate.swift in Sources */,
 				858A989923886F850051AF45 /* SceneDelegate.swift in Sources */,
 			);
