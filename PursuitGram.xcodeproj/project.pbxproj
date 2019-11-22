@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,7 +11,7 @@
 		5E6B7385317E471D1EF712CB /* Pods_PursuitGram.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B50DE2E906C2AF7860BBCE3F /* Pods_PursuitGram.framework */; };
 		858A989723886F850051AF45 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A989623886F850051AF45 /* AppDelegate.swift */; };
 		858A989923886F850051AF45 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A989823886F850051AF45 /* SceneDelegate.swift */; };
-		858A989B23886F850051AF45 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A989A23886F850051AF45 /* ViewController.swift */; };
+		858A989B23886F850051AF45 /* PursuitGramViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A989A23886F850051AF45 /* PursuitGramViewController.swift */; };
 		858A989E23886F850051AF45 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 858A989C23886F850051AF45 /* Main.storyboard */; };
 		858A98A023886F890051AF45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 858A989F23886F890051AF45 /* Assets.xcassets */; };
 		858A98A323886F890051AF45 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 858A98A123886F890051AF45 /* LaunchScreen.storyboard */; };
@@ -34,7 +34,7 @@
 		858A989323886F850051AF45 /* PursuitGram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PursuitGram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		858A989623886F850051AF45 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		858A989823886F850051AF45 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		858A989A23886F850051AF45 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		858A989A23886F850051AF45 /* PursuitGramViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PursuitGramViewController.swift; sourceTree = "<group>"; };
 		858A989D23886F850051AF45 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		858A989F23886F890051AF45 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		858A98A223886F890051AF45 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -102,7 +102,7 @@
 			children = (
 				858A989623886F850051AF45 /* AppDelegate.swift */,
 				858A989823886F850051AF45 /* SceneDelegate.swift */,
-				858A989A23886F850051AF45 /* ViewController.swift */,
+				858A989A23886F850051AF45 /* PursuitGramViewController.swift */,
 				858A989C23886F850051AF45 /* Main.storyboard */,
 				858A989F23886F890051AF45 /* Assets.xcassets */,
 				858A98A123886F890051AF45 /* LaunchScreen.storyboard */,
@@ -128,7 +128,6 @@
 				48A6D175048BDCA7ED764F66 /* Pods-PursuitGramTests.debug.xcconfig */,
 				E4880379D1593941A9248A53 /* Pods-PursuitGramTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -300,7 +299,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				858A989B23886F850051AF45 /* ViewController.swift in Sources */,
+				858A989B23886F850051AF45 /* PursuitGramViewController.swift in Sources */,
 				858A989723886F850051AF45 /* AppDelegate.swift in Sources */,
 				858A989923886F850051AF45 /* SceneDelegate.swift in Sources */,
 			);
