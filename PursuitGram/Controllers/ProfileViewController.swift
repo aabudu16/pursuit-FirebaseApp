@@ -86,6 +86,14 @@ class ProfileViewController: UIViewController {
         return button
     }()
     
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let activityView = UIActivityIndicatorView(style: .large)
+        activityView.hidesWhenStopped = true
+        activityView.color = .white
+        activityView.stopAnimating()
+        return activityView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = #colorLiteral(red: 0.2601475716, green: 0.2609100342, blue: 0.9169666171, alpha: 1)
@@ -94,6 +102,7 @@ class ProfileViewController: UIViewController {
         //MARK: TODO - load in user image and fields when coming from profile page
     }
     
+    //MARK: @objc fucntions
     @objc private func createButtonPressed(){
         print("create button pressed")
         // guarding against not having a valid email or password
@@ -105,7 +114,8 @@ class ProfileViewController: UIViewController {
             showAlert(with: "Error", and: "Please a valid image and user name")
             return
         }
-        
+        // srart activity indicator
+        activityIndicator.startAnimating()
         FirebaseAuthService.manager.createNewUser(email: createUserModel.email.lowercased(), password: createUserModel.password) { [weak self] (result) in
             self?.handleCreateAccountResponse(with: result)
         }
@@ -132,6 +142,8 @@ class ProfileViewController: UIViewController {
                 print(error)
             }
         }
+        // stop activity indicator
+        activityIndicator.stopAnimating()
     }
     
     @objc private func updateButtonPressed(){
@@ -199,6 +211,7 @@ class ProfileViewController: UIViewController {
         setupUpdateButton()
         configureEditDisplayNameConstraints()
         configureCreateButtonConstraints()
+        configureActivityIndicatorConstraints()
     }
     //MARK: private function
     
@@ -271,7 +284,7 @@ class ProfileViewController: UIViewController {
                     return
             }
             UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
-                window.rootViewController = ProfileViewController()
+                window.rootViewController = FeedViewController()
             }, completion: nil)
         } else {
             self.navigationController?.popViewController(animated: true)
@@ -326,6 +339,12 @@ class ProfileViewController: UIViewController {
             updateProfileButton.heightAnchor.constraint(equalToConstant: 30),
             updateProfileButton.widthAnchor.constraint(equalToConstant: view.bounds.width / 3)
         ])
+    }
+    
+    private func configureActivityIndicatorConstraints(){
+        imageView.addSubview(activityIndicator)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([activityIndicator.topAnchor.constraint(equalTo: self.imageView.topAnchor), activityIndicator.leadingAnchor.constraint(equalTo: self.imageView.leadingAnchor) ,activityIndicator.trailingAnchor.constraint(equalTo: self.imageView.trailingAnchor) ,activityIndicator.bottomAnchor.constraint(equalTo: self.imageView.bottomAnchor)])
     }
 }
 
