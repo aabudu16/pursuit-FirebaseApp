@@ -8,9 +8,11 @@
 
 import UIKit
 import Photos
+import FirebaseAuth
 
 class ProfileViewController: UIViewController {
     
+    var createUserModel:(email:String, password: String) = ("","")
     var settingFromLogin = false
     
     //MARK: TODO - set up views using autolayout, not frames
@@ -53,21 +55,33 @@ class ProfileViewController: UIViewController {
         label.text = "Profile"
         return label
     }()
-    
-    lazy var saveButton: UIButton = {
+    lazy var createButton:UIButton = {
         let button = UIButton()
-        button.setTitle("Save Profile", for: .normal)
+        button.setTitle("Create", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = UIFont(name: "Verdana-Bold", size: 16)
+        button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        button.layer.cornerRadius = 5
+        button.addTarget(self, action: #selector(createButtonPressed), for: .touchUpInside)
+        return button
+    }()
+    
+    lazy var updateProfileButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Update Profile", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont(name: "Verdana-Bold", size: 14)
         button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         button.layer.cornerRadius = 5
-        button.addTarget(self, action: #selector(savePressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(updateButtonPressed), for: .touchUpInside)
+        button.isEnabled = false
+        button.isHidden = true
         return button
     }()
     
     lazy var editDisplayName: UIButton = {
         let button = UIButton()
-        button.setTitle("Edit", for: .normal)
+        button.setBackgroundImage(UIImage(named: "edit_property"), for: .normal)
         button.addTarget(self, action: #selector(editButtonPressed), for: .touchUpInside)
         return button
     }()
@@ -75,14 +89,25 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = #colorLiteral(red: 0.2601475716, green: 0.2609100342, blue: 0.9169666171, alpha: 1)
+        showAlert(with: "Required", and: "Double tap on the image to set your profile image, and set a valid display name")
         setupViews()
         //MARK: TODO - load in user image and fields when coming from profile page
     }
     
-    @objc private func savePressed(){
+    @objc private func createButtonPressed(){
+        print("create button pressed")
+        // guarding against not having a valid email or password
+        guard createUserModel.email != "", createUserModel.password != "" else {
+            return
+        }
+        // guarding against not having a display name and image
         guard let userName = displayName.text, let imageURL = imageURL else {
             showAlert(with: "Error", and: "Please a valid image and user name")
             return
+        }
+        
+        FirebaseAuthService.manager.createNewUser(email: createUserModel.email.lowercased(), password: createUserModel.password) { [weak self] (result) in
+            self?.handleCreateAccountResponse(with: result)
         }
         
         FirebaseAuthService.manager.updateUserFields(userName: userName, photoURL: imageURL) { (result) in
@@ -109,6 +134,37 @@ class ProfileViewController: UIViewController {
         }
     }
     
+    @objc private func updateButtonPressed(){
+        // guarding against not having a display name and image
+        guard let userName = displayName.text, let imageURL = imageURL else {
+            showAlert(with: "Error", and: "Please a valid image and user name")
+            return
+        }
+        FirebaseAuthService.manager.updateUserFields(userName: userName, photoURL: imageURL) { (result) in
+            switch result {
+            case .success():
+                FirestoreService.manager.updateCurrentUser(userName: userName, photoURL: imageURL) { [weak self] (nextResult) in
+                    switch nextResult {
+                    case .success():
+                        self?.handleNavigationAwayFromVC()
+                    case .failure(let error):
+                        //MARK: TODO - handle
+                        
+                        //Discussion - if can't update on user object in collection, our firestore object will not match what is in auth. should we:
+                        // 1. Re-try the save?
+                        // 2. Revert the changes on the auth user?
+                        // This reconciliation should all be handled on the server side, but having to handle here, we could run into an infinite loop when re-saving.
+                        print(error)
+                    }
+                }
+            case .failure(let error):
+                //MARK: TODO - handle
+                print(error)
+            }
+        }
+    }
+    
+    
     @objc private func imageViewDoubleTapped(sender:UITapGestureRecognizer) {
         print("pressed")
         //MARK: TODO - action sheet with multiple media options
@@ -132,10 +188,45 @@ class ProfileViewController: UIViewController {
     }
     
     @objc func editButtonPressed(){
-       showAlertWithTextField(with: "Edit your display name")
+        print(createUserModel)
+        showAlertWithTextField(with: "Edit your display name")
     }
     
+    private func setupViews() {
+        setupImageView()
+        profileLabelConstraints()
+        configureDisplayNameConstraints()
+        setupUpdateButton()
+        configureEditDisplayNameConstraints()
+        configureCreateButtonConstraints()
+    }
     //MARK: private function
+    
+    private func handleCreateAccountResponse(with result: Result<User, Error>) {
+        DispatchQueue.main.async { [weak self] in
+            switch result {
+            case.success(let user):
+                print(user)
+                guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                    let sceneDelegate = windowScene.delegate as? SceneDelegate, let window = sceneDelegate.window
+                    else { return }
+                
+                if FirebaseAuthService.manager.currentUser != nil {
+                    UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
+                        window.rootViewController = FeedViewController()
+                    }, completion: nil)
+                    
+                } else {
+                    print("No current user")
+                }
+                
+                
+            case .failure(let error):
+                self?.showAlert(with: "Error Creating User", and: error.localizedDescription)
+            }
+            
+        }
+    }
     
     private func showAlert(with title: String, and message: String) {
         let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -187,14 +278,8 @@ class ProfileViewController: UIViewController {
         }
     }
     
-    private func setupViews() {
-        setupImageView()
-        profileLabelConstraints()
-        configureDisplayNameConstraints()
-        setupSaveButton()
-        configureEditDisplayNameConstraints()
-    }
-    //MARK: -- private constraints function
+    
+    //MARK: private constraints function
     private func configureDisplayNameConstraints(){
         view.addSubview(displayName)
         displayName.translatesAutoresizingMaskIntoConstraints = false
@@ -204,7 +289,13 @@ class ProfileViewController: UIViewController {
     private func configureEditDisplayNameConstraints(){
         self.view.addSubview(editDisplayName)
         editDisplayName.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([editDisplayName.topAnchor.constraint(equalTo: self.displayName.bottomAnchor, constant: 5), editDisplayName.centerXAnchor.constraint(equalTo: self.view.centerXAnchor), editDisplayName.heightAnchor.constraint(equalToConstant: 20), editDisplayName.widthAnchor.constraint(equalToConstant: 40)])
+        NSLayoutConstraint.activate([editDisplayName.bottomAnchor.constraint(equalTo: self.displayName.topAnchor, constant: 25), editDisplayName.leadingAnchor.constraint(equalTo: self.view.centerXAnchor, constant:  80), editDisplayName.heightAnchor.constraint(equalToConstant: 20), editDisplayName.widthAnchor.constraint(equalToConstant: 20)])
+    }
+    
+    private func configureCreateButtonConstraints(){
+        self.view.addSubview(createButton)
+        createButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([createButton.topAnchor.constraint(equalTo: self.displayName.bottomAnchor, constant:  20),createButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant:  100),createButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant:  -100), createButton.heightAnchor.constraint(equalToConstant: 30)])
     }
     
     private func profileLabelConstraints(){
@@ -225,15 +316,15 @@ class ProfileViewController: UIViewController {
     }
     
     
-    private func setupSaveButton() {
-        view.addSubview(saveButton)
+    private func setupUpdateButton() {
+        view.addSubview(updateProfileButton)
         
-        saveButton.translatesAutoresizingMaskIntoConstraints = false
+        updateProfileButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            saveButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            saveButton.heightAnchor.constraint(equalToConstant: 30),
-            saveButton.widthAnchor.constraint(equalToConstant: view.bounds.width / 3)
+            updateProfileButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            updateProfileButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            updateProfileButton.heightAnchor.constraint(equalToConstant: 30),
+            updateProfileButton.widthAnchor.constraint(equalToConstant: view.bounds.width / 3)
         ])
     }
 }

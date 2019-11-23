@@ -49,7 +49,7 @@ class SignUpViewController: UIViewController {
       
       lazy var createButton: UIButton = {
           let button = UIButton(type: .system)
-          button.setTitle("Create", for: .normal)
+          button.setTitle("Continue", for: .normal)
           button.setTitleColor(.white, for: .normal)
           button.titleLabel?.font = UIFont(name: "Verdana-Bold", size: 14)
           button.backgroundColor = #colorLiteral(red: 0.2334540784, green: 0.2368975878, blue: 0.8274126649, alpha: 1)
@@ -100,14 +100,26 @@ class SignUpViewController: UIViewController {
                  showAlert(with: "Error", and: "Please enter a valid password. Passwords must have at least 8 characters.")
                  return
              }
+         let profileVC = ProfileViewController()
+        profileVC.createUserModel.email = email
+        profileVC.createUserModel.password = password
+             present(profileVC, animated: true, completion: nil)
+//        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//                             let sceneDelegate = windowScene.delegate as? SceneDelegate, let window = sceneDelegate.window
+//                             else { return }
+//
+//
+//                             UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
+//                                 window.rootViewController = ProfileViewController()
+//                             }, completion: nil)
+//
              
-             FirebaseAuthService.manager.createNewUser(email: email.lowercased(), password: password) { [weak self] (result) in
-                 self?.handleCreateAccountResponse(with: result)
-             }
+//             FirebaseAuthService.manager.createNewUser(email: email.lowercased(), password: password) { [weak self] (result) in
+//                 self?.handleCreateAccountResponse(with: result)
+//             }
          }
       
       //MARK: Private Methods
-      
       private func showAlert(with title: String, and message: String) {
              let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
              alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
@@ -121,10 +133,7 @@ class SignUpViewController: UIViewController {
               print(user)
                   guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                       let sceneDelegate = windowScene.delegate as? SceneDelegate, let window = sceneDelegate.window
-                      else {
-                          //MARK: TODO - handle could not swap root view controller
-                          return
-                  }
+                      else { return }
                   
                   if FirebaseAuthService.manager.currentUser != nil {
                       UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
