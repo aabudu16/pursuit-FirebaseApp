@@ -16,9 +16,9 @@ class SignUpViewController: UIViewController {
       lazy var headerLabel: UILabel = {
           let label = UILabel()
           label.numberOfLines = 0
-          label.text = "Fave Spots: Create Account"
+          label.text = "Create An Account"
           label.font = UIFont(name: "Verdana-Bold", size: 28)
-          label.textColor = UIColor(red: 255/255, green: 86/255, blue: 0/255, alpha: 1.0)
+          label.textColor = #colorLiteral(red: 0.2338379025, green: 0.2365351021, blue: 0.8315110803, alpha: 1)
           label.backgroundColor = .clear
           label.textAlignment = .center
           return label
@@ -52,7 +52,7 @@ class SignUpViewController: UIViewController {
           button.setTitle("Create", for: .normal)
           button.setTitleColor(.white, for: .normal)
           button.titleLabel?.font = UIFont(name: "Verdana-Bold", size: 14)
-          button.backgroundColor = UIColor(red: 255/255, green: 67/255, blue: 0/255, alpha: 1)
+          button.backgroundColor = #colorLiteral(red: 0.2334540784, green: 0.2368975878, blue: 0.8274126649, alpha: 1)
           button.layer.cornerRadius = 5
           button.addTarget(self, action: #selector(trySignUp), for: .touchUpInside)
           button.isEnabled = false
@@ -66,10 +66,13 @@ class SignUpViewController: UIViewController {
           view.backgroundColor = UIColor(red: 198/255, green: 198/255, blue: 198/255, alpha: 1)
           setupHeaderLabel()
           setupCreateStackView()
-
-          // Do any additional setup after loading the view.
       }
       
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
       //MARK: Obj C methods
       
       @objc func validateFields() {

@@ -13,12 +13,20 @@ class LoginViewController: UIViewController {
     
     //MARK: UI Objects
     
+    private var containerViewButtomConstraint = NSLayoutConstraint()
+    private var containerViewTopConstraint = NSLayoutConstraint()
+    
+    lazy var containerView:UIView = {
+        let container = UIView()
+        return container
+    }()
+    
     lazy var logoLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.text = "Persuitgram"
-        label.font = UIFont(name: "Verdana-Bold", size: 60)
-        label.textColor = UIColor(red: 255/255, green: 86/255, blue: 0/255, alpha: 1.0)
+        label.text = "Pursuitgram"
+        label.font = UIFont(name: "Verdana-Bold", size: 50)
+        label.textColor = #colorLiteral(red: 0.2601475716, green: 0.2609100342, blue: 0.9169666171, alpha: 1)
         label.backgroundColor = .clear
         label.textAlignment = .center
         return label
@@ -32,6 +40,7 @@ class LoginViewController: UIViewController {
         textField.borderStyle = .bezel
         textField.autocorrectionType = .no
         textField.addTarget(self, action: #selector(validateFields), for: .editingChanged)
+        textField.delegate = self
         return textField
     }()
     
@@ -44,6 +53,7 @@ class LoginViewController: UIViewController {
         textField.autocorrectionType = .no
         textField.isSecureTextEntry = true
         textField.addTarget(self, action: #selector(validateFields), for: .editingChanged)
+        textField.delegate = self
         return textField
     }()
     
@@ -52,10 +62,9 @@ class LoginViewController: UIViewController {
         button.setTitle("Login", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont(name: "Verdana-Bold", size: 14)
-        button.backgroundColor = UIColor(red: 255/255, green: 67/255, blue: 0/255, alpha: 1)
+        button.backgroundColor = #colorLiteral(red: 0.2601475716, green: 0.2609100342, blue: 0.9169666171, alpha: 1)
         button.layer.cornerRadius = 5
         button.addTarget(self, action: #selector(tryLogin), for: .touchUpInside)
-        button.isEnabled = false
         return button
     }()
     
@@ -79,13 +88,42 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor(red: 198/255, green: 198/255, blue: 198/255, alpha: 1)
         setupSubViews()
+        addKeyBoardHandlingObservers()
         
         // Do any additional setup after loading the view.
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
     
     //MARK: Objc C methods
     
+    @objc func handleKeyBoardShowing(sender notification:Notification){
+             guard let infoDict = notification.userInfo else {return}
+             guard let keyboardFreme = infoDict[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {return}
+             guard let duration = infoDict[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else {return}
+             
+             self.containerViewButtomConstraint.constant = -10 - (keyboardFreme.height)
+             self.containerViewTopConstraint.constant = 500 - (keyboardFreme.height)
+             
+             UIView.animate(withDuration: duration) {
+                 self.view.layoutIfNeeded()
+             }
+         }
+         
+    @objc func handleKeyBoardHiding(sender notification:Notification){
+        guard let infoDict = notification.userInfo else {return}
+        guard let duration = infoDict[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else {return}
+        
+        self.containerViewButtomConstraint.constant = -10
+        self.containerViewTopConstraint.constant = 500
+      
+        UIView.animate(withDuration: duration) {
+            self.view.layoutIfNeeded()
+        }
+    }
     @objc func validateFields() {
         guard emailTextField.hasText, passwordTextField.hasText else {
             loginButton.backgroundColor = UIColor(red: 255/255, green: 67/255, blue: 0/255, alpha: 0.5)
@@ -108,6 +146,7 @@ class LoginViewController: UIViewController {
             return
         }
         
+        
         //MARK: TODO - remove whitespace (if any) from email/password
         
         guard email.isValidEmail else {
@@ -127,6 +166,12 @@ class LoginViewController: UIViewController {
     
     
     //MARK: Private methods
+    
+    private func addKeyBoardHandlingObservers(){
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardShowing(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyBoardHiding(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
     
     private func handleLoginResponse(with result: Result<(), Error>) {
         switch result {
@@ -167,11 +212,24 @@ class LoginViewController: UIViewController {
     //MARK: UI Setup
     
     private func setupSubViews() {
+        configureContainerviewConstraints()
         setupLogoLabel()
         setupCreateAccountButton()
         setupLoginStackView()
+        
     }
     
+    private func configureContainerviewConstraints(){
+        view.addSubview(containerView)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([containerView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor), containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor), containerView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor), containerView.heightAnchor.constraint(equalToConstant: 400)])
+        
+        self.containerViewButtomConstraint = containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant:  -10)
+        containerViewButtomConstraint.isActive = true
+        
+        self.containerViewTopConstraint = containerView.topAnchor.constraint(equalTo: view.topAnchor, constant: 500)
+        containerViewTopConstraint.isActive = true
+    }
     private func setupLogoLabel() {
         view.addSubview(logoLabel)
         
@@ -187,27 +245,31 @@ class LoginViewController: UIViewController {
         stackView.axis = .vertical
         stackView.spacing = 15
         stackView.distribution = .fillEqually
-        self.view.addSubview(stackView)
+        self.containerView.addSubview(stackView)
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             stackView.bottomAnchor.constraint(equalTo: createAccountButton.topAnchor, constant: -50),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            stackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
             stackView.heightAnchor.constraint(equalToConstant: 130)])
     }
     
     private func setupCreateAccountButton() {
-        view.addSubview(createAccountButton)
+        containerView.addSubview(createAccountButton)
         
         createAccountButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            createAccountButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            createAccountButton.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            createAccountButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            createAccountButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            createAccountButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            createAccountButton.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor),
             createAccountButton.heightAnchor.constraint(equalToConstant: 50)])
     }
-    
-    
 }
 
+extension LoginViewController:UITextFieldDelegate{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+}

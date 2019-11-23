@@ -26,7 +26,7 @@ class ProfileViewController: UIViewController {
     
     
     lazy var imageView: UIImageView = {
-        let guesture = UITapGestureRecognizer(target: self, action: #selector(addImagePressed(sender:)))
+        let guesture = UITapGestureRecognizer(target: self, action: #selector(imageViewDoubleTapped(sender:)))
         guesture.numberOfTapsRequired = 2
         let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width / 2, height: self.view.bounds.width / 2))
         imageView.backgroundColor = .black
@@ -54,23 +54,12 @@ class ProfileViewController: UIViewController {
         return label
     }()
     
-    lazy var userNameTextField: UITextField = {
-        let textField = UITextField()
-        textField.placeholder = "Enter User Name"
-        textField.font = UIFont(name: "Verdana", size: 14)
-        textField.backgroundColor = .white
-        textField.borderStyle = .bezel
-        textField.layer.cornerRadius = 5
-        textField.autocorrectionType = .no
-        return textField
-    }()
-    
     lazy var saveButton: UIButton = {
         let button = UIButton()
         button.setTitle("Save Profile", for: .normal)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont(name: "Verdana-Bold", size: 14)
-        button.backgroundColor = UIColor(red: 255/255, green: 67/255, blue: 0/255, alpha: 1)
+        button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         button.layer.cornerRadius = 5
         button.addTarget(self, action: #selector(savePressed), for: .touchUpInside)
         return button
@@ -85,14 +74,14 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .gray
+        self.view.backgroundColor = #colorLiteral(red: 0.2601475716, green: 0.2609100342, blue: 0.9169666171, alpha: 1)
         setupViews()
         //MARK: TODO - load in user image and fields when coming from profile page
     }
     
     @objc private func savePressed(){
-        guard let userName = userNameTextField.text, let imageURL = imageURL else {
-            //MARK: TODO - alert
+        guard let userName = displayName.text, let imageURL = imageURL else {
+            showAlert(with: "Error", and: "Please a valid image and user name")
             return
         }
         
@@ -120,7 +109,7 @@ class ProfileViewController: UIViewController {
         }
     }
     
-    @objc private func addImagePressed(sender:UITapGestureRecognizer) {
+    @objc private func imageViewDoubleTapped(sender:UITapGestureRecognizer) {
         print("pressed")
         //MARK: TODO - action sheet with multiple media options
         switch PHPhotoLibrary.authorizationStatus() {
@@ -200,13 +189,12 @@ class ProfileViewController: UIViewController {
     
     private func setupViews() {
         setupImageView()
-        //setupUserNameTextField()
         profileLabelConstraints()
         configureDisplayNameConstraints()
         setupSaveButton()
         configureEditDisplayNameConstraints()
     }
-    
+    //MARK: -- private constraints function
     private func configureDisplayNameConstraints(){
         view.addSubview(displayName)
         displayName.translatesAutoresizingMaskIntoConstraints = false
@@ -236,17 +224,6 @@ class ProfileViewController: UIViewController {
         ])
     }
     
-    private func setupUserNameTextField() {
-        view.addSubview(userNameTextField)
-        
-        userNameTextField.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            userNameTextField.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 30),
-            userNameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            userNameTextField.heightAnchor.constraint(equalToConstant: 30),
-            userNameTextField.widthAnchor.constraint(equalToConstant: view.bounds.width / 2)
-        ])
-    }
     
     private func setupSaveButton() {
         view.addSubview(saveButton)
