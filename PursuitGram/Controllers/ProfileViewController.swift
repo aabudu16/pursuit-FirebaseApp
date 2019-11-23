@@ -25,16 +25,33 @@ class ProfileViewController: UIViewController {
     
     
     
-    
     lazy var imageView: UIImageView = {
         let guesture = UITapGestureRecognizer(target: self, action: #selector(addImagePressed(sender:)))
         guesture.numberOfTapsRequired = 2
-        let imageView = UIImageView()
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width / 2, height: self.view.bounds.width / 2))
         imageView.backgroundColor = .black
+        imageView.layer.cornerRadius = imageView.frame.height / 2
+        imageView.clipsToBounds = true
         imageView.image = UIImage(systemName: "photo")
         imageView.isUserInteractionEnabled = true
         imageView.addGestureRecognizer(guesture)
         return imageView
+    }()
+    
+    lazy var displayName: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = label.font.withSize(25)
+        label.text = "Display Name"
+        return label
+    }()
+    
+    lazy var profileLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = label.font.withSize(30)
+        label.text = "Profile"
+        return label
     }()
     
     lazy var userNameTextField: UITextField = {
@@ -56,6 +73,13 @@ class ProfileViewController: UIViewController {
         button.backgroundColor = UIColor(red: 255/255, green: 67/255, blue: 0/255, alpha: 1)
         button.layer.cornerRadius = 5
         button.addTarget(self, action: #selector(savePressed), for: .touchUpInside)
+        return button
+    }()
+    
+    lazy var editDisplayName: UIButton = {
+        let button = UIButton()
+        button.setTitle("Edit", for: .normal)
+        button.addTarget(self, action: #selector(editButtonPressed), for: .touchUpInside)
         return button
     }()
     
@@ -118,9 +142,31 @@ class ProfileViewController: UIViewController {
         }
     }
     
+    @objc func editButtonPressed(){
+       showAlertWithTextField(with: "Edit your display name")
+    }
+    
+    //MARK: private function
+    
     private func showAlert(with title: String, and message: String) {
         let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        present(alertVC, animated: true, completion: nil)
+    }
+    
+    private func showAlertWithTextField(with message: String) {
+        let alertVC = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        alertVC.addTextField { (textField) in
+            textField.placeholder = "Title"
+        }
+        let save = UIAlertAction(title: "Save", style: .default) { (action) in
+            guard let text = alertVC.textFields?[0].text else {return}
+            self.displayName.text = text
+        }
+        
+        let cancel = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+        alertVC.addAction(save)
+        alertVC.addAction(cancel)
         present(alertVC, animated: true, completion: nil)
     }
     
@@ -154,11 +200,30 @@ class ProfileViewController: UIViewController {
     
     private func setupViews() {
         setupImageView()
-        setupUserNameTextField()
-        //setupAddImageButton()
+        //setupUserNameTextField()
+        profileLabelConstraints()
+        configureDisplayNameConstraints()
         setupSaveButton()
+        configureEditDisplayNameConstraints()
     }
     
+    private func configureDisplayNameConstraints(){
+        view.addSubview(displayName)
+        displayName.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([displayName.leadingAnchor.constraint(equalTo: self.view.leadingAnchor), displayName.trailingAnchor.constraint(equalTo: self.view.trailingAnchor), displayName.heightAnchor.constraint(equalToConstant: 50), displayName.topAnchor.constraint(equalTo: self.imageView.bottomAnchor, constant: 20)])
+    }
+    
+    private func configureEditDisplayNameConstraints(){
+        self.view.addSubview(editDisplayName)
+        editDisplayName.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([editDisplayName.topAnchor.constraint(equalTo: self.displayName.bottomAnchor, constant: 5), editDisplayName.centerXAnchor.constraint(equalTo: self.view.centerXAnchor), editDisplayName.heightAnchor.constraint(equalToConstant: 20), editDisplayName.widthAnchor.constraint(equalToConstant: 40)])
+    }
+    
+    private func profileLabelConstraints(){
+        view.addSubview(profileLabel)
+        profileLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([profileLabel.bottomAnchor.constraint(equalTo: self.imageView.topAnchor, constant:  -20), profileLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor), profileLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor), profileLabel.heightAnchor.constraint(equalToConstant: 100)])
+    }
     private func setupImageView() {
         view.addSubview(imageView)
         
