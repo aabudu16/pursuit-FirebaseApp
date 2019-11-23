@@ -12,6 +12,7 @@ import FirebaseAuth
 
 class ProfileViewController: UIViewController {
     
+    var currentUser: Result<User, Error>!
     var createUserModel:(email:String, password: String) = ("","")
     var settingFromLogin = false
     
@@ -32,6 +33,8 @@ class ProfileViewController: UIViewController {
         guesture.numberOfTapsRequired = 2
         let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width / 2, height: self.view.bounds.width / 2))
         imageView.backgroundColor = .black
+        imageView.layer.borderWidth = 2
+        imageView.layer.borderColor = UIColor.white.cgColor
         imageView.layer.cornerRadius = imageView.frame.height / 2
         imageView.clipsToBounds = true
         imageView.image = UIImage(systemName: "photo")
@@ -116,25 +119,25 @@ class ProfileViewController: UIViewController {
         }
         // srart activity indicator
         activityIndicator.startAnimating()
-        FirebaseAuthService.manager.createNewUser(email: createUserModel.email.lowercased(), password: createUserModel.password) { [weak self] (result) in
-            self?.handleCreateAccountResponse(with: result)
-        }
+        // handles creating a new user account
+               FirebaseAuthService.manager.createNewUser(email: createUserModel.email.lowercased(), password: createUserModel.password) { [weak self] (result) in
+                   self?.currentUser = result
+               }
         
+        // handles creating and updaring current user profile
         FirebaseAuthService.manager.updateUserFields(userName: userName, photoURL: imageURL) { (result) in
             switch result {
             case .success():
                 FirestoreService.manager.updateCurrentUser(userName: userName, photoURL: imageURL) { [weak self] (nextResult) in
                     switch nextResult {
                     case .success():
-                        self?.handleNavigationAwayFromVC()
+                        self?.imageView.layer.borderColor = UIColor.green.cgColor
                     case .failure(let error):
-                        //MARK: TODO - handle
-                        
-                        //Discussion - if can't update on user object in collection, our firestore object will not match what is in auth. should we:
-                        // 1. Re-try the save?
-                        // 2. Revert the changes on the auth user?
-                        // This reconciliation should all be handled on the server side, but having to handle here, we could run into an infinite loop when re-saving.
+                        self?.imageView.layer.borderColor = UIColor.red.cgColor
+                        self?.showAlert(with: "Error", and: "It seem your image was not save. Please check your image format and try again")
+                        self?.activityIndicator.stopAnimating()
                         print(error)
+                        return
                     }
                 }
             case .failure(let error):
@@ -142,6 +145,8 @@ class ProfileViewController: UIViewController {
                 print(error)
             }
         }
+        
+        self.handleCreateAccountResponse(with: currentUser)
         // stop activity indicator
         activityIndicator.stopAnimating()
     }
@@ -152,25 +157,22 @@ class ProfileViewController: UIViewController {
             showAlert(with: "Error", and: "Please a valid image and user name")
             return
         }
+        self.activityIndicator.startAnimating()
         FirebaseAuthService.manager.updateUserFields(userName: userName, photoURL: imageURL) { (result) in
             switch result {
             case .success():
                 FirestoreService.manager.updateCurrentUser(userName: userName, photoURL: imageURL) { [weak self] (nextResult) in
                     switch nextResult {
                     case .success():
-                        self?.handleNavigationAwayFromVC()
+                        self?.activityIndicator.stopAnimating()
+                        self?.showAlertWithSucessMessage()
                     case .failure(let error):
-                        //MARK: TODO - handle
-                        
-                        //Discussion - if can't update on user object in collection, our firestore object will not match what is in auth. should we:
-                        // 1. Re-try the save?
-                        // 2. Revert the changes on the auth user?
-                        // This reconciliation should all be handled on the server side, but having to handle here, we could run into an infinite loop when re-saving.
                         print(error)
                     }
                 }
             case .failure(let error):
-                //MARK: TODO - handle
+                self.showAlert(with: "Error", and: "It seem your image was not save. Please check your image format and try again")
+                self.activityIndicator.stopAnimating()
                 print(error)
             }
         }
@@ -215,6 +217,7 @@ class ProfileViewController: UIViewController {
     }
     //MARK: private function
     
+    
     private func handleCreateAccountResponse(with result: Result<User, Error>) {
         DispatchQueue.main.async { [weak self] in
             switch result {
@@ -241,6 +244,14 @@ class ProfileViewController: UIViewController {
         }
     }
     
+    private func showAlertWithSucessMessage(){
+        let alert = UIAlertController(title: "Sussess", message: "You have updated your profile", preferredStyle: .alert)
+        let ok = UIAlertAction(title: "OK", style: .default) { (dismiss) in
+            self.handleNavigationAwayFromVCAfterUpdating()
+        }
+         alert.addAction(ok)
+        present(alert, animated: true, completion: nil)
+    }
     private func showAlert(with title: String, and message: String) {
         let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
@@ -274,21 +285,23 @@ class ProfileViewController: UIViewController {
         }
     }
     
-    private func handleNavigationAwayFromVC() {
+    private func handleNavigationAwayFromVCAfterUpdating() {
         if settingFromLogin {
-            //MARK: TODO - refactor this logic into scene delegate
-            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                let sceneDelegate = windowScene.delegate as? SceneDelegate, let window = sceneDelegate.window
-                else {
-                    //MARK: TODO - handle could not swap root view controller
-                    return
-            }
-            UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
-                window.rootViewController = FeedViewController()
-            }, completion: nil)
-        } else {
-            self.navigationController?.popViewController(animated: true)
-        }
+//            //MARK: TODO - refactor this logic into scene delegate
+//            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//                let sceneDelegate = windowScene.delegate as? SceneDelegate, let window = sceneDelegate.window
+//                else {
+//                    //MARK: TODO - handle could not swap root view controller
+//                    return
+//            }
+//
+//            UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
+//                window.rootViewController = FeedViewController()
+//            }, completion: nil)
+//        } else {
+//            self.navigationController?.popViewController(animated: true)
+            self.dismiss(animated: true, completion: nil)
+       }
     }
     
     
