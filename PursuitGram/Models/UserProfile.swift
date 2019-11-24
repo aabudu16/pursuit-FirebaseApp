@@ -43,8 +43,8 @@ struct UserProfile {
         return [
             "userName": self.userName ?? "",
             "email": self.email ?? "",
-            "uid": self.uid,
-            "photoURL": self.photoURL ?? ""
+//            "uid": self.uid,
+//            "photoURL": self.photoURL ?? ""
         ]
     }
 }
