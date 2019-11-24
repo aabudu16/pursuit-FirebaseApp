@@ -53,6 +53,13 @@ class ImageUploadViewController: UIViewController {
         return label
     }()
     
+    lazy var activityIndicator: UIActivityIndicatorView = {
+          let activityView = UIActivityIndicatorView(style: .large)
+          activityView.hidesWhenStopped = true
+          activityView.color = .white
+          activityView.stopAnimating()
+          return activityView
+      }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,6 +78,7 @@ class ImageUploadViewController: UIViewController {
     @objc private func imageViewDoubleTapped(sender:UITapGestureRecognizer) {
            print("pressed")
            //MARK: TODO - action sheet with multiple media options
+        activityIndicator.startAnimating()
            switch PHPhotoLibrary.authorizationStatus() {
            case .notDetermined, .denied, .restricted:
                PHPhotoLibrary.requestAuthorization({[weak self] status in
@@ -128,6 +136,12 @@ class ImageUploadViewController: UIViewController {
         uploadButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([uploadButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -20), uploadButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 50), uploadButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor,constant: -50), uploadButton.heightAnchor.constraint(equalToConstant: 40)])
     }
+    
+    private func configureActivityIndicatorConstraints(){
+        self.uploadImage.addSubview(activityIndicator)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([activityIndicator.topAnchor.constraint(equalTo: self.uploadImage.topAnchor) , activityIndicator.leadingAnchor.constraint(equalTo: self.uploadImage.leadingAnchor) ,activityIndicator.trailingAnchor.constraint(equalTo: self.uploadImage.trailingAnchor) ,activityIndicator.bottomAnchor.constraint(equalTo: self.uploadImage.bottomAnchor)])
+    }
 }
 
 extension ImageUploadViewController:UIImagePickerControllerDelegate, UINavigationControllerDelegate{
@@ -138,6 +152,7 @@ extension ImageUploadViewController:UIImagePickerControllerDelegate, UINavigatio
             return
         }
         self.image = selectedImage
+        activityIndicator.stopAnimating()
         picker.dismiss(animated: true, completion: nil)
     }
 }
