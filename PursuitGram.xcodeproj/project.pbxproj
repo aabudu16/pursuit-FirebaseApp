@@ -29,6 +29,7 @@
 		858A98D52389FCEA0051AF45 /* ImageUploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98D42389FCEA0051AF45 /* ImageUploadViewController.swift */; };
 		858A98D7238A8C970051AF45 /* FeedsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98D6238A8C970051AF45 /* FeedsCollectionViewCell.swift */; };
 		858A98DA238A92540051AF45 /* CustomLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98D9238A92540051AF45 /* CustomLayer.swift */; };
+		858A98DD238AB86E0051AF45 /* FeedDetailedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98DC238AB86E0051AF45 /* FeedDetailedViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		858A98D42389FCEA0051AF45 /* ImageUploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadViewController.swift; sourceTree = "<group>"; };
 		858A98D6238A8C970051AF45 /* FeedsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedsCollectionViewCell.swift; sourceTree = "<group>"; };
 		858A98D9238A92540051AF45 /* CustomLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomLayer.swift; sourceTree = "<group>"; };
+		858A98DC238AB86E0051AF45 /* FeedDetailedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedDetailedViewController.swift; sourceTree = "<group>"; };
 		B13732B3A36DB025A328B0CA /* Pods_PursuitGramTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PursuitGramTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B50DE2E906C2AF7860BBCE3F /* Pods_PursuitGram.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PursuitGram.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7E43DBCE3E16B1E7C73B862 /* Pods-PursuitGram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PursuitGram.release.xcconfig"; path = "Target Support Files/Pods-PursuitGram/Pods-PursuitGram.release.xcconfig"; sourceTree = "<group>"; };
@@ -176,6 +178,7 @@
 				858A98C123887D950051AF45 /* FeedViewController.swift */,
 				858A98D42389FCEA0051AF45 /* ImageUploadViewController.swift */,
 				858A98C5238884570051AF45 /* ProfileViewController.swift */,
+				858A98DC238AB86E0051AF45 /* FeedDetailedViewController.swift */,
 				858A98D22389FA810051AF45 /* TapbarViewController.swift */,
 				858A98BF23887C2E0051AF45 /* SignupViewController.swift */,
 			);
@@ -389,6 +392,7 @@
 				858A989723886F850051AF45 /* AppDelegate.swift in Sources */,
 				858A98D32389FA810051AF45 /* TapbarViewController.swift in Sources */,
 				858A98C8238887DA0051AF45 /* UserProfile.swift in Sources */,
+				858A98DD238AB86E0051AF45 /* FeedDetailedViewController.swift in Sources */,
 				858A98D52389FCEA0051AF45 /* ImageUploadViewController.swift in Sources */,
 				858A98C6238884570051AF45 /* ProfileViewController.swift in Sources */,
 				858A989923886F850051AF45 /* SceneDelegate.swift in Sources */,

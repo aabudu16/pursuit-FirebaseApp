@@ -43,11 +43,14 @@ class FeedViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupView()
+    }
+    
+    private func setupView(){
         view.backgroundColor = .white
         configureFeedLabelConstraints()
         configureCollectionViewConstraints()
     }
-    
     //MARK: Private Constraints function
     private func configureFeedLabelConstraints(){
         self.view.addSubview(feedLabel)

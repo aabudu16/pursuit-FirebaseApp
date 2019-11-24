@@ -14,7 +14,7 @@ class ImageUploadViewController: UIViewController {
     
     var image = UIImage() {
         didSet {
-        self.uploadImage.image = image
+            self.uploadImage.image = image
         }
     }
     
@@ -54,21 +54,16 @@ class ImageUploadViewController: UIViewController {
     }()
     
     lazy var activityIndicator: UIActivityIndicatorView = {
-          let activityView = UIActivityIndicatorView(style: .large)
-          activityView.hidesWhenStopped = true
-          activityView.color = .white
-          activityView.stopAnimating()
-          return activityView
-      }()
+        let activityView = UIActivityIndicatorView(style: .large)
+        activityView.hidesWhenStopped = true
+        activityView.color = .white
+        activityView.stopAnimating()
+        return activityView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        configureTitleLabelConstraints()
-        configureUploadImageConstraints()
-        configureUploadButtonConstraints()
-        showAlert(with: "Message", and: "Double tab to set your image")
-        
+        setupView()
     }
     //MARK:-- @objc function
     @objc func handleUploadButton(){
@@ -76,40 +71,48 @@ class ImageUploadViewController: UIViewController {
     }
     
     @objc private func imageViewDoubleTapped(sender:UITapGestureRecognizer) {
-           print("pressed")
-           //MARK: TODO - action sheet with multiple media options
+        print("pressed")
+        //MARK: TODO - action sheet with multiple media options
         activityIndicator.startAnimating()
-           switch PHPhotoLibrary.authorizationStatus() {
-           case .notDetermined, .denied, .restricted:
-               PHPhotoLibrary.requestAuthorization({[weak self] status in
-                   switch status {
-                   case .authorized:
-                       self?.presentPhotoPickerController()
-                   case .denied:
-                       //MARK: TODO - set up more intuitive UI interaction
-                       print("Denied photo library permissions")
-                   default:
-                       //MARK: TODO - set up more intuitive UI interaction
-                       print("No usable status")
-                   }
-               })
-           default:
-               presentPhotoPickerController()
-           }
-       }
+        switch PHPhotoLibrary.authorizationStatus() {
+        case .notDetermined, .denied, .restricted:
+            PHPhotoLibrary.requestAuthorization({[weak self] status in
+                switch status {
+                case .authorized:
+                    self?.presentPhotoPickerController()
+                case .denied:
+                    //MARK: TODO - set up more intuitive UI interaction
+                    print("Denied photo library permissions")
+                default:
+                    //MARK: TODO - set up more intuitive UI interaction
+                    print("No usable status")
+                }
+            })
+        default:
+            presentPhotoPickerController()
+        }
+    }
     
     //MARK: private functions
     
+    private func setupView(){
+        view.backgroundColor = .white
+        configureTitleLabelConstraints()
+        configureUploadImageConstraints()
+        configureUploadButtonConstraints()
+        configureActivityIndicatorConstraints()
+        showAlert(with: "Message", and: "Double tab to set your image")
+    }
     private func presentPhotoPickerController() {
-           DispatchQueue.main.async{
-               let imagePickerViewController = UIImagePickerController()
-               imagePickerViewController.delegate = self
-               imagePickerViewController.sourceType = .photoLibrary
-               imagePickerViewController.allowsEditing = true
-               imagePickerViewController.mediaTypes = ["public.image", "public.movie"]
-               self.present(imagePickerViewController, animated: true, completion: nil)
-           }
-       }
+        DispatchQueue.main.async{
+            let imagePickerViewController = UIImagePickerController()
+            imagePickerViewController.delegate = self
+            imagePickerViewController.sourceType = .photoLibrary
+            imagePickerViewController.allowsEditing = true
+            imagePickerViewController.mediaTypes = ["public.image", "public.movie"]
+            self.present(imagePickerViewController, animated: true, completion: nil)
+        }
+    }
     
     private func showAlert(with title: String, and message: String) {
         let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -152,7 +155,7 @@ extension ImageUploadViewController:UIImagePickerControllerDelegate, UINavigatio
             return
         }
         self.image = selectedImage
-        activityIndicator.stopAnimating()
+        self.activityIndicator.stopAnimating()
         picker.dismiss(animated: true, completion: nil)
     }
 }
