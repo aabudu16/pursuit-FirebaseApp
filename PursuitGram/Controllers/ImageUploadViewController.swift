@@ -9,34 +9,36 @@
 import UIKit
 
 class ImageUploadViewController: UIViewController {
-
+    
     lazy var uploadImage:UIImageView = {
-           let image = UIImageView()
-           image.image = #imageLiteral(resourceName: "imagePlaceholder")
-           return image
-       }()
+        let image = UIImageView()
+        CustomLayer.shared.createCustomlayer(layer: image.layer)
+        image.image = #imageLiteral(resourceName: "imagePlaceholder")
+        return image
+    }()
     
     lazy var uploadButton: UIButton = {
-           let button = UIButton(type: .system)
-           button.setTitle("Login", for: .normal)
-           button.setTitleColor(.white, for: .normal)
-           button.titleLabel?.font = UIFont(name: "Verdana-Bold", size: 14)
-           button.backgroundColor = #colorLiteral(red: 0.2601475716, green: 0.2609100342, blue: 0.9169666171, alpha: 1)
-           button.layer.cornerRadius = 5
-           button.addTarget(self, action: #selector(handleUploadButton), for: .touchUpInside)
-           return button
-       }()
+        let button = UIButton(type: .system)
+        button.setTitle("Login", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont(name: "Verdana-Bold", size: 14)
+        button.backgroundColor = #colorLiteral(red: 0.2601475716, green: 0.2609100342, blue: 0.9169666171, alpha: 1)
+        button.layer.cornerRadius = 5
+        CustomLayer.shared.createCustomlayer(layer: button.layer)
+        button.addTarget(self, action: #selector(handleUploadButton), for: .touchUpInside)
+        return button
+    }()
     
     lazy var titleLabel: UILabel = {
-          let label = UILabel()
-          label.numberOfLines = 0
-          label.text = "Upload An Image"
-          label.font = UIFont(name: "Verdana-Bold", size: 35)
-          label.textColor = #colorLiteral(red: 0.2601475716, green: 0.2609100342, blue: 0.9169666171, alpha: 1)
-          label.backgroundColor = .clear
-          label.textAlignment = .center
-          return label
-      }()
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.text = "Upload An Image"
+        label.font = UIFont(name: "Verdana-Bold", size: 35)
+        label.textColor = #colorLiteral(red: 0.2601475716, green: 0.2609100342, blue: 0.9169666171, alpha: 1)
+        label.backgroundColor = .clear
+        label.textAlignment = .center
+        return label
+    }()
     
     
     override func viewDidLoad() {
@@ -45,15 +47,22 @@ class ImageUploadViewController: UIViewController {
         configureTitleLabelConstraints()
         configureUploadImageConstraints()
         configureUploadButtonConstraints()
-
+        showAlert(with: "Message", and: "Double tab to set your image")
+        
     }
-//MARK:-- @objc function
+    //MARK:-- @objc function
     @objc func handleUploadButton(){
         print("upload button pressed")
     }
-
     
-  //MARK: private constraints
+    //MARK: private functions
+    private func showAlert(with title: String, and message: String) {
+        let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        present(alertVC, animated: true, completion: nil)
+    }
+    
+    //MARK: private constraints
     
     private func configureTitleLabelConstraints(){
         view.addSubview(titleLabel)
