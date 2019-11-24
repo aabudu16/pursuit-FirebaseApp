@@ -7,13 +7,26 @@
 //
 
 import UIKit
+import Photos
 
 class ImageUploadViewController: UIViewController {
     
+    
+    var image = UIImage() {
+        didSet {
+        self.uploadImage.image = image
+        }
+    }
+    
+    //MARK:-- UIObjects
     lazy var uploadImage:UIImageView = {
         let image = UIImageView()
         CustomLayer.shared.createCustomlayer(layer: image.layer)
+        let guesture = UITapGestureRecognizer(target: self, action: #selector(imageViewDoubleTapped(sender:)))
+        guesture.numberOfTapsRequired = 2
         image.image = #imageLiteral(resourceName: "imagePlaceholder")
+        image.isUserInteractionEnabled = true
+        image.addGestureRecognizer(guesture)
         return image
     }()
     
@@ -55,7 +68,41 @@ class ImageUploadViewController: UIViewController {
         print("upload button pressed")
     }
     
+    @objc private func imageViewDoubleTapped(sender:UITapGestureRecognizer) {
+           print("pressed")
+           //MARK: TODO - action sheet with multiple media options
+           switch PHPhotoLibrary.authorizationStatus() {
+           case .notDetermined, .denied, .restricted:
+               PHPhotoLibrary.requestAuthorization({[weak self] status in
+                   switch status {
+                   case .authorized:
+                       self?.presentPhotoPickerController()
+                   case .denied:
+                       //MARK: TODO - set up more intuitive UI interaction
+                       print("Denied photo library permissions")
+                   default:
+                       //MARK: TODO - set up more intuitive UI interaction
+                       print("No usable status")
+                   }
+               })
+           default:
+               presentPhotoPickerController()
+           }
+       }
+    
     //MARK: private functions
+    
+    private func presentPhotoPickerController() {
+           DispatchQueue.main.async{
+               let imagePickerViewController = UIImagePickerController()
+               imagePickerViewController.delegate = self
+               imagePickerViewController.sourceType = .photoLibrary
+               imagePickerViewController.allowsEditing = true
+               imagePickerViewController.mediaTypes = ["public.image", "public.movie"]
+               self.present(imagePickerViewController, animated: true, completion: nil)
+           }
+       }
+    
     private func showAlert(with title: String, and message: String) {
         let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
@@ -80,5 +127,17 @@ class ImageUploadViewController: UIViewController {
         view.addSubview(uploadButton)
         uploadButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([uploadButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -20), uploadButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 50), uploadButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor,constant: -50), uploadButton.heightAnchor.constraint(equalToConstant: 40)])
+    }
+}
+
+extension ImageUploadViewController:UIImagePickerControllerDelegate, UINavigationControllerDelegate{
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        guard let selectedImage = info[.originalImage] as? UIImage else {
+            return
+        }
+        self.image = selectedImage
+        picker.dismiss(animated: true, completion: nil)
     }
 }

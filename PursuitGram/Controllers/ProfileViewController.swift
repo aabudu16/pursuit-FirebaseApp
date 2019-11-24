@@ -20,7 +20,7 @@ class ProfileViewController: UIViewController {
     //MARK: TODO - edit other fields in this VC
     var image = UIImage() {
         didSet {
-           // self.imageView.image = image
+        self.imageView.image = image
         }
     }
     
