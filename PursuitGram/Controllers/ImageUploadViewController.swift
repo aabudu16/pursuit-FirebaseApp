@@ -1,18 +1,18 @@
 //
-//  FeedViewController.swift
+//  ImageUploadViewController.swift
 //  PursuitGram
 //
-//  Created by Mr Wonderful on 11/22/19.
+//  Created by Mr Wonderful on 11/23/19.
 //  Copyright © 2019 Mr Wonderful. All rights reserved.
 //
 
 import UIKit
 
-class FeedViewController: UIViewController {
+class ImageUploadViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
+        view.backgroundColor = .blue
         // Do any additional setup after loading the view.
     }
     

@@ -25,6 +25,8 @@
 		858A98C8238887DA0051AF45 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98C7238887DA0051AF45 /* UserProfile.swift */; };
 		858A98CA238889010051AF45 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98C9238889010051AF45 /* Post.swift */; };
 		858A98CC23888BA60051AF45 /* FirebaseStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98CB23888BA60051AF45 /* FirebaseStorageService.swift */; };
+		858A98D32389FA810051AF45 /* TapbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98D22389FA810051AF45 /* TapbarViewController.swift */; };
+		858A98D52389FCEA0051AF45 /* ImageUploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98D42389FCEA0051AF45 /* ImageUploadViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +62,8 @@
 		858A98C7238887DA0051AF45 /* UserProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		858A98C9238889010051AF45 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		858A98CB23888BA60051AF45 /* FirebaseStorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseStorageService.swift; sourceTree = "<group>"; };
+		858A98D22389FA810051AF45 /* TapbarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapbarViewController.swift; sourceTree = "<group>"; };
+		858A98D42389FCEA0051AF45 /* ImageUploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadViewController.swift; sourceTree = "<group>"; };
 		B13732B3A36DB025A328B0CA /* Pods_PursuitGramTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PursuitGramTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B50DE2E906C2AF7860BBCE3F /* Pods_PursuitGram.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PursuitGram.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7E43DBCE3E16B1E7C73B862 /* Pods-PursuitGram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PursuitGram.release.xcconfig"; path = "Target Support Files/Pods-PursuitGram/Pods-PursuitGram.release.xcconfig"; sourceTree = "<group>"; };
@@ -165,7 +169,9 @@
 			children = (
 				858A989A23886F850051AF45 /* LoginViewController.swift */,
 				858A98C123887D950051AF45 /* FeedViewController.swift */,
+				858A98D42389FCEA0051AF45 /* ImageUploadViewController.swift */,
 				858A98C5238884570051AF45 /* ProfileViewController.swift */,
+				858A98D22389FA810051AF45 /* TapbarViewController.swift */,
 				858A98BF23887C2E0051AF45 /* SignupViewController.swift */,
 			);
 			path = Controllers;
@@ -365,7 +371,9 @@
 				858A989B23886F850051AF45 /* LoginViewController.swift in Sources */,
 				858A98C423887DCD0051AF45 /* String+Extensions.swift in Sources */,
 				858A989723886F850051AF45 /* AppDelegate.swift in Sources */,
+				858A98D32389FA810051AF45 /* TapbarViewController.swift in Sources */,
 				858A98C8238887DA0051AF45 /* UserProfile.swift in Sources */,
+				858A98D52389FCEA0051AF45 /* ImageUploadViewController.swift in Sources */,
 				858A98C6238884570051AF45 /* ProfileViewController.swift in Sources */,
 				858A989923886F850051AF45 /* SceneDelegate.swift in Sources */,
 				858A98CC23888BA60051AF45 /* FirebaseStorageService.swift in Sources */,

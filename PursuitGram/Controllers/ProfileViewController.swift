@@ -20,7 +20,7 @@ class ProfileViewController: UIViewController {
     //MARK: TODO - edit other fields in this VC
     var image = UIImage() {
         didSet {
-            self.imageView.image = image
+           // self.imageView.image = image
         }
     }
     
@@ -114,7 +114,7 @@ class ProfileViewController: UIViewController {
         }
         // guarding against not having a display name and image
         guard let userName = displayName.text, let imageURL = imageURL else {
-            showAlert(with: "Error", and: "Please a valid image and user name")
+            showAlert(with: "Error", and: "Please use a valid image and user name")
             return
         }
         // srart activity indicator
