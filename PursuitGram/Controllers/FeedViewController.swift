@@ -46,7 +46,6 @@ class FeedViewController: UIViewController {
         view.backgroundColor = .white
         configureFeedLabelConstraints()
         configureCollectionViewConstraints()
-        // Do any additional setup after loading the view.
     }
     
     //MARK: Private Constraints function
@@ -66,7 +65,7 @@ class FeedViewController: UIViewController {
 extension FeedViewController: UICollectionViewDelegate{}
 extension FeedViewController: UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return 16
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
