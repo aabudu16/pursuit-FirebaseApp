@@ -8,6 +8,7 @@
 
 import Foundation
 import FirebaseStorage
+import Firebase
 
 class FirebaseStorageService {
     static var manager = FirebaseStorageService()
@@ -40,11 +41,5 @@ class FirebaseStorageService {
                 }
             }
         }
-    }
-    
-    func storeCurrentUser(completion: @escaping (Result<UserProfile,Error>)->()){
-        
-        
-        
     }
 }

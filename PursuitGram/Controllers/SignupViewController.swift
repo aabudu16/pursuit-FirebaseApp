@@ -58,6 +58,20 @@ class SignUpViewController: UIViewController {
           button.isEnabled = false
           return button
       }()
+    
+    lazy var dismissButton: UIButton = {
+        let button = UIButton(type: .system)
+        let attributedTitle = NSMutableAttributedString(string: "Already have an account?  ",
+                                                        attributes: [
+                                                            NSAttributedString.Key.font: UIFont(name: "Verdana", size: 14)!,
+                                                            NSAttributedString.Key.foregroundColor: UIColor.white])
+        attributedTitle.append(NSAttributedString(string: "Login",
+                                                  attributes: [NSAttributedString.Key.font: UIFont(name: "Verdana-Bold", size: 14)!,
+                                                               NSAttributedString.Key.foregroundColor:  UIColor(red: 17/255, green: 154/255, blue: 237/255, alpha: 1)]))
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        button.addTarget(self, action: #selector(dismissFromView), for: .touchUpInside)
+        return button
+    }()
       
       //MARK: Lifecycle
       
@@ -74,7 +88,11 @@ class SignUpViewController: UIViewController {
     }
     
       //MARK: Obj C methods
-      
+    
+    @objc func dismissFromView(){
+        self.dismiss(animated: true, completion: nil)
+    }
+    
       @objc func validateFields() {
              guard emailTextField.hasText, passwordTextField.hasText else {
                  createButton.backgroundColor = UIColor(red: 255/255, green: 67/255, blue: 0/255, alpha: 0.5)
@@ -168,7 +186,7 @@ class SignUpViewController: UIViewController {
          }
          
          private func setupCreateStackView() {
-             let stackView = UIStackView(arrangedSubviews: [emailTextField,passwordTextField,createButton])
+             let stackView = UIStackView(arrangedSubviews: [emailTextField,passwordTextField,createButton, dismissButton])
              stackView.axis = .vertical
              stackView.spacing = 15
              stackView.distribution = .fillEqually
@@ -180,7 +198,7 @@ class SignUpViewController: UIViewController {
                  stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
                  stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)])
          }
-      
+
 
 }
 

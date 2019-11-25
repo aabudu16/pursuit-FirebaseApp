@@ -65,7 +65,12 @@ class FeedViewController: UIViewController {
     }
     
 }
-extension FeedViewController: UICollectionViewDelegate{}
+extension FeedViewController: UICollectionViewDelegate{
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let feedDetailedVc = FeedDetailedViewController()
+        navigationController?.pushViewController(feedDetailedVc, animated: true)
+    }
+}
 extension FeedViewController: UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 16

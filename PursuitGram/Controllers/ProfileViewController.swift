@@ -12,6 +12,7 @@ import FirebaseAuth
 
 class ProfileViewController: UIViewController {
     
+    var userProfile:UserProfile!
     var currentUser: Result<User, Error>!
     var createUserModel:(email:String, password: String) = ("","")
     var settingFromLogin = false
@@ -20,7 +21,8 @@ class ProfileViewController: UIViewController {
     //MARK: TODO - edit other fields in this VC
     var image = UIImage() {
         didSet {
-        self.imageView.image = image
+            self.imageView.image = image
+            imageView.layer.borderColor = UIColor.green.cgColor
         }
     }
     
@@ -98,7 +100,8 @@ class ProfileViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad()        
+        
         self.view.backgroundColor = #colorLiteral(red: 0.2601475716, green: 0.2609100342, blue: 0.9169666171, alpha: 1)
         showAlert(with: "Required", and: "Double tap on the image to set your profile image, and set a valid display name")
         setupViews()
@@ -112,6 +115,12 @@ class ProfileViewController: UIViewController {
         guard createUserModel.email != "", createUserModel.password != "" else {
             return
         }
+        // guarding against the label not having a display name or empty string and the imageviews image isnt the plaveholder image
+        guard displayName.text != "", displayName.text != "Display Name", imageView.image != UIImage(named: "imagePlaceholder") else {
+           showAlert(with: "Error", and: "Please use a valid image and user name")
+            return
+        }
+        
         // guarding against not having a display name and image
         guard let userName = displayName.text, let imageURL = imageURL else {
             showAlert(with: "Error", and: "Please use a valid image and user name")
@@ -120,34 +129,36 @@ class ProfileViewController: UIViewController {
         // srart activity indicator
         activityIndicator.startAnimating()
         // handles creating a new user account
-               FirebaseAuthService.manager.createNewUser(email: createUserModel.email.lowercased(), password: createUserModel.password) { [weak self] (result) in
-                   self?.currentUser = result
-               }
+        FirebaseAuthService.manager.createNewUser(email: createUserModel.email.lowercased(), password: createUserModel.password) { [weak self] (result) in
+            self?.currentUser = result
+            self?.handleCreateAccountResponse(with: result)
+            
+        }
         
+        
+        guard FirebaseAuthService.manager.currentUser != nil else {
+            print("cant create user")
+            return
+        }
+
         // handles creating and updaring current user profile
-        FirebaseAuthService.manager.updateUserFields(userName: userName, photoURL: imageURL) { (result) in
-            switch result {
-            case .success():
                 FirestoreService.manager.updateCurrentUser(userName: userName, photoURL: imageURL) { [weak self] (nextResult) in
                     switch nextResult {
                     case .success():
-                        self?.imageView.layer.borderColor = UIColor.green.cgColor
+                        print(userName)
+                        print(imageURL.absoluteString)
                     case .failure(let error):
-                        self?.imageView.layer.borderColor = UIColor.red.cgColor
                         self?.showAlert(with: "Error", and: "It seem your image was not save. Please check your image format and try again")
                         self?.activityIndicator.stopAnimating()
                         print(error)
                         return
                     }
                 }
-            case .failure(let error):
-                //MARK: TODO - handle
-                print(error)
-            }
-        }
         
-        self.handleCreateAccountResponse(with: currentUser)
-        // stop activity indicator
+        let feedVC = FeedViewController()
+        self.present(feedVC, animated: true, completion: nil)
+    //     self.handleNavigatingToNextVC(with: currentUser)
+//         stop activity indicator
         activityIndicator.stopAnimating()
     }
     
@@ -217,39 +228,50 @@ class ProfileViewController: UIViewController {
     }
     //MARK: private function
     
-    
     private func handleCreateAccountResponse(with result: Result<User, Error>) {
         DispatchQueue.main.async { [weak self] in
             switch result {
-            case.success(let user):
-                print(user)
-                guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                    let sceneDelegate = windowScene.delegate as? SceneDelegate, let window = sceneDelegate.window
-                    else { return }
-                
-                if FirebaseAuthService.manager.currentUser != nil {
-                    UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
-                        window.rootViewController = FeedViewController()
-                    }, completion: nil)
-                    
-                } else {
-                    print("No current user")
+            case .success(let user):
+                FirestoreService.manager.createAppUser(user: UserProfile(from: user)) { [weak self] newResult in
+                    print(newResult)
                 }
-                
-                
             case .failure(let error):
-                self?.showAlert(with: "Error Creating User", and: error.localizedDescription)
+                self?.showAlert(with: "Error creating user", and: "An error occured while creating new account \(error)")
             }
-            
         }
     }
+//    private func handleNavigatingToNextVC(with result: Result<User, Error>) {
+//        DispatchQueue.main.async { [weak self] in
+//            switch result {
+//            case.success(let user):
+//                print(user)
+//                guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//                    let sceneDelegate = windowScene.delegate as? SceneDelegate, let window = sceneDelegate.window
+//                    else { return }
+//                
+//                if FirebaseAuthService.manager.currentUser != nil {
+//                    UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
+//                        window.rootViewController = FeedViewController()
+//                    }, completion: nil)
+//                    
+//                } else {
+//                    print("No current user")
+//                }
+//                
+//                
+//            case .failure(let error):
+//                self?.showAlert(with: "Error Creating User", and: error.localizedDescription)
+//            }
+//            
+//        }
+//    }
     
     private func showAlertWithSucessMessage(){
         let alert = UIAlertController(title: "Sussess", message: "You have updated your profile", preferredStyle: .alert)
         let ok = UIAlertAction(title: "OK", style: .default) { (dismiss) in
             self.handleNavigationAwayFromVCAfterUpdating()
         }
-         alert.addAction(ok)
+        alert.addAction(ok)
         present(alert, animated: true, completion: nil)
     }
     private func showAlert(with title: String, and message: String) {
@@ -287,21 +309,21 @@ class ProfileViewController: UIViewController {
     
     private func handleNavigationAwayFromVCAfterUpdating() {
         if settingFromLogin {
-//            //MARK: TODO - refactor this logic into scene delegate
-//            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-//                let sceneDelegate = windowScene.delegate as? SceneDelegate, let window = sceneDelegate.window
-//                else {
-//                    //MARK: TODO - handle could not swap root view controller
-//                    return
-//            }
-//
-//            UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
-//                window.rootViewController = FeedViewController()
-//            }, completion: nil)
-//        } else {
-//            self.navigationController?.popViewController(animated: true)
+            //            //MARK: TODO - refactor this logic into scene delegate
+            //            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+            //                let sceneDelegate = windowScene.delegate as? SceneDelegate, let window = sceneDelegate.window
+            //                else {
+            //                    //MARK: TODO - handle could not swap root view controller
+            //                    return
+            //            }
+            //
+            //            UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
+            //                window.rootViewController = FeedViewController()
+            //            }, completion: nil)
+            //        } else {
+            //            self.navigationController?.popViewController(animated: true)
             self.dismiss(animated: true, completion: nil)
-       }
+        }
     }
     
     
@@ -369,7 +391,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
         }
         self.image = image
         
-        guard let imageData = image.jpegData(compressionQuality: 1) else {
+        guard let imageData = image.jpegData(compressionQuality: 0.7) else {
             //MARK: TODO - gracefully fail out without interrupting UX
             return
         }
@@ -380,6 +402,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
                 //Note - defer UI response, update user image url in auth and in firestore when save is pressed
                 self?.imageURL = url
             case .failure(let error):
+                self?.imageView.layer.borderColor = UIColor.red.cgColor
                 //MARK: TODO - defer image not save alert, try again later. maybe make VC "dirty" to allow user to move on in nav stack
                 print(error)
             }
