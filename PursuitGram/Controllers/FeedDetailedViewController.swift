@@ -10,6 +10,15 @@ import UIKit
 
 class FeedDetailedViewController: UIViewController {
     
+    var feed:Post!{
+        didSet{
+            feedDetailImage.image = UIImage(data: feed.feedImage)
+            displayNameLabel.text = "Submitted by \("DisplayName")"
+            dateLabel.text = "Created at: \(String(describing: feed.dateCreated))"
+            
+        }
+    }
+    
     //MARK: private UIObjects
     lazy var feedDetailImage:UIImageView = {
         let image = UIImageView()
