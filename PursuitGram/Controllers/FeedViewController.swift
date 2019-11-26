@@ -43,7 +43,7 @@ class FeedViewController: UIViewController {
     }()
     
     
-        //MARK: UI LifeCylce
+    //MARK: UI LifeCylce
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -55,9 +55,9 @@ class FeedViewController: UIViewController {
         getPosts()
     }
     
-        //MARK: objc function
+    //MARK: objc function
     @objc func handleLogoutButton(){
-      try?  Auth.auth().signOut()
+        try?  Auth.auth().signOut()
         
         let loginVC = LoginViewController()
         loginVC.modalPresentationStyle = .fullScreen
@@ -65,22 +65,22 @@ class FeedViewController: UIViewController {
     }
     
     @objc func handlePresentingProfileVC(){
-       let profileVC = ProfileViewController()
+        let profileVC = ProfileViewController()
         profileVC.buttonSelection = .updateProfileButtonEnabled
         self.present(profileVC, animated: true, completion: nil)
     }
     
-        //MARK: private func
+    //MARK: private func
     private func getPosts() {
-           FirestoreService.manager.getAllPosts(sortingCriteria: .fromNewestToOldest) { (result) in
-               switch result {
-               case .success(let posts):
-                   self.feeds = posts
-               case .failure(let error):
-                   print("error getting posts \(error)")
-               }
-           }
-       }
+        FirestoreService.manager.getAllPosts(sortingCriteria: .fromNewestToOldest) { (result) in
+            switch result {
+            case .success(let posts):
+                self.feeds = posts
+            case .failure(let error):
+                print("error getting posts \(error)")
+            }
+        }
+    }
     
     
     private func setupLogoutButton(){
@@ -121,11 +121,18 @@ extension FeedViewController: UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collectionIdentifiers.collectionCell.rawValue, for: indexPath) as? FeedsCollectionViewCell else {return UICollectionViewCell()}
         let feed = feeds[indexPath.row]
-        if let userName = FirebaseAuthService.manager.currentUser?.displayName{
-          cell.displayNameLabel.text = userName
-        }
         
-        cell.feedImage.image = UIImage(data: feed.feedImage)
+        cell.displayNameLabel.text = feed.userName
+        ImageHelper.shared.getImage(urlStr: feed.feedImage) { (result) in
+            switch result{
+            case .failure(let error):
+                print(error)
+            case .success(let image):
+                DispatchQueue.main.async {
+                    cell.feedImage.image = image
+                }
+            }
+        }
         CustomLayer.shared.createCustomlayer(layer: cell.layer)
         
         return cell

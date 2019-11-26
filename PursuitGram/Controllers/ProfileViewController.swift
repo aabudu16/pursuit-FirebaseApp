@@ -17,6 +17,7 @@ enum SwitchButtons {
 }
 
 class ProfileViewController: UIViewController {
+    
     var unwrappedImageURL:URL!
     var userName:String!
     var userProfile:UserProfile!
@@ -276,12 +277,6 @@ class ProfileViewController: UIViewController {
                             case .success():
                                self?.setSceneDelegateInitialVC(with: result )
                             }
-                            
-                            
-                            
-                            
-                            
-                            
                         }
                         //stop activity indicator
                         self?.activityIndicator.stopAnimating()
@@ -423,11 +418,10 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
         FirebaseStorageService.manager.storeUserInputImage(image: imageData, completion: { [weak self] (result) in
             switch result{
             case .success(let url):
-                //Note - defer UI response, update user image url in auth and in firestore when save is pressed
                 self?.imageURL = url
             case .failure(let error):
                 self?.imageView.layer.borderColor = UIColor.red.cgColor
-                //MARK: TODO - defer image not save alert, try again later. maybe make VC "dirty" to allow user to move on in nav stack
+
                 print(error)
             }
         })

@@ -12,7 +12,16 @@ class FeedDetailedViewController: UIViewController {
     
     var feed:Post!{
         didSet{
-            feedDetailImage.image = UIImage(data: feed.feedImage)
+            
+            ImageHelper.shared.getImage(urlStr: feed.feedImage) { (result) in
+                switch result{
+                case .failure(let error):
+                    print(error)
+                case .success(let image):
+                    self.feedDetailImage.image = image
+                }
+            }
+            
             displayNameLabel.text = "Submitted by \("DisplayName")"
             dateLabel.text = "Created at: \(String(describing: feed.dateCreated))"
             
@@ -58,14 +67,14 @@ class FeedDetailedViewController: UIViewController {
         return label
     }()
     
-     //MARK: LifeCycle
+    //MARK: LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         // Do any additional setup after loading the view.
     }
     
-     //MARK: private functions
+    //MARK: private functions
     private func setupView(){
         view.backgroundColor = .white
         configureTitleLabelConstraints()

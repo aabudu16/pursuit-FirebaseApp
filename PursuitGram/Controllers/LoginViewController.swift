@@ -32,6 +32,13 @@ class LoginViewController: UIViewController {
         return label
     }()
     
+    lazy var logoImage:UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "pursuit-logo")
+        image.contentMode = .scaleAspectFit
+        return image
+    }()
+    
     lazy var emailTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Enter Email"
@@ -186,7 +193,7 @@ class LoginViewController: UIViewController {
             
             UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
                 if FirebaseAuthService.manager.currentUser != nil {
-                    window.rootViewController = FeedViewController()
+                    window.rootViewController = TapbarViewController()
                     
                 } else {
                     print("No current user")
@@ -216,6 +223,7 @@ class LoginViewController: UIViewController {
         setupLogoLabel()
         setupCreateAccountButton()
         setupLoginStackView()
+        setupLogoImageConstraints()
         
     }
     
@@ -264,6 +272,12 @@ class LoginViewController: UIViewController {
             createAccountButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             createAccountButton.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor),
             createAccountButton.heightAnchor.constraint(equalToConstant: 50)])
+    }
+    
+    private func setupLogoImageConstraints(){
+        view.addSubview(logoImage)
+        logoImage.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([logoImage.topAnchor.constraint(equalTo: logoLabel.bottomAnchor, constant: 60), logoImage.leadingAnchor.constraint(equalTo: self.view.leadingAnchor), logoImage.trailingAnchor.constraint(equalTo: self.view.trailingAnchor), logoImage.heightAnchor.constraint(equalToConstant: 250)])
     }
 }
 

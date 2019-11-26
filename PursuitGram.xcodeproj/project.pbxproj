@@ -30,7 +30,8 @@
 		858A98D7238A8C970051AF45 /* FeedsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98D6238A8C970051AF45 /* FeedsCollectionViewCell.swift */; };
 		858A98DA238A92540051AF45 /* CustomLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98D9238A92540051AF45 /* CustomLayer.swift */; };
 		858A98DD238AB86E0051AF45 /* FeedDetailedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98DC238AB86E0051AF45 /* FeedDetailedViewController.swift */; };
-		858A98DF238D91400051AF45 /* UIImage-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98DE238D91400051AF45 /* UIImage-Extension.swift */; };
+		858A98DF238D91400051AF45 /* ImageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98DE238D91400051AF45 /* ImageHelper.swift */; };
+		858A98E1238D9B980051AF45 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98E0238D9B980051AF45 /* AppError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,7 +72,8 @@
 		858A98D6238A8C970051AF45 /* FeedsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedsCollectionViewCell.swift; sourceTree = "<group>"; };
 		858A98D9238A92540051AF45 /* CustomLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomLayer.swift; sourceTree = "<group>"; };
 		858A98DC238AB86E0051AF45 /* FeedDetailedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedDetailedViewController.swift; sourceTree = "<group>"; };
-		858A98DE238D91400051AF45 /* UIImage-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage-Extension.swift"; sourceTree = "<group>"; };
+		858A98DE238D91400051AF45 /* ImageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageHelper.swift; sourceTree = "<group>"; };
+		858A98E0238D9B980051AF45 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		B13732B3A36DB025A328B0CA /* Pods_PursuitGramTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PursuitGramTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B50DE2E906C2AF7860BBCE3F /* Pods_PursuitGram.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PursuitGram.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7E43DBCE3E16B1E7C73B862 /* Pods-PursuitGram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PursuitGram.release.xcconfig"; path = "Target Support Files/Pods-PursuitGram/Pods-PursuitGram.release.xcconfig"; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 			children = (
 				858A989623886F850051AF45 /* AppDelegate.swift */,
 				858A989823886F850051AF45 /* SceneDelegate.swift */,
+				858A98E0238D9B980051AF45 /* AppError.swift */,
 				858A98CE23889C8C0051AF45 /* Controllers */,
 				858A98D8238A8C9C0051AF45 /* Custom Cell */,
 				858A98CF23889CA30051AF45 /* Extenstions */,
@@ -191,7 +194,7 @@
 			isa = PBXGroup;
 			children = (
 				858A98D9238A92540051AF45 /* CustomLayer.swift */,
-				858A98DE238D91400051AF45 /* UIImage-Extension.swift */,
+				858A98DE238D91400051AF45 /* ImageHelper.swift */,
 				858A98C323887DCD0051AF45 /* String+Extensions.swift */,
 			);
 			path = Extenstions;
@@ -386,6 +389,7 @@
 			files = (
 				858A98C023887C2E0051AF45 /* SignupViewController.swift in Sources */,
 				858A98CA238889010051AF45 /* Post.swift in Sources */,
+				858A98E1238D9B980051AF45 /* AppError.swift in Sources */,
 				858A98BD238879F00051AF45 /* FirebaseAuthService.swift in Sources */,
 				858A98BE238879F00051AF45 /* FirebaseService.swift in Sources */,
 				858A98DA238A92540051AF45 /* CustomLayer.swift in Sources */,
@@ -397,7 +401,7 @@
 				858A98C8238887DA0051AF45 /* UserProfile.swift in Sources */,
 				858A98DD238AB86E0051AF45 /* FeedDetailedViewController.swift in Sources */,
 				858A98D52389FCEA0051AF45 /* ImageUploadViewController.swift in Sources */,
-				858A98DF238D91400051AF45 /* UIImage-Extension.swift in Sources */,
+				858A98DF238D91400051AF45 /* ImageHelper.swift in Sources */,
 				858A98C6238884570051AF45 /* ProfileViewController.swift in Sources */,
 				858A989923886F850051AF45 /* SceneDelegate.swift in Sources */,
 				858A98CC23888BA60051AF45 /* FirebaseStorageService.swift in Sources */,

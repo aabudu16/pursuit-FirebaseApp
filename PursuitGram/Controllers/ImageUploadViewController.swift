@@ -12,7 +12,7 @@ import FirebaseAuth
 
 class ImageUploadViewController: UIViewController {
     
-    
+    var imageURL: URL? = nil
     var image = UIImage() {
         didSet {
             self.uploadImage.image = image
@@ -72,16 +72,21 @@ class ImageUploadViewController: UIViewController {
             showAlert(with: "Error", and: "Please enter a valid image")
             return
         }
-        guard let imageData = image.jpegData(compressionQuality: 0.7) else {
-            return
-        }
+        
 
         guard let user = FirebaseAuthService.manager.currentUser else {
             showAlert(with: "Error", and: "You must be logged in to create a post")
             return
         }
+        
+        guard let imageURLString = imageURL?.absoluteString else {
+            return
+        }
 
-        let newPost = Post(creatorID: user.uid, image: imageData)
+        guard let userDisplayName = user.displayName else {
+            return
+        }
+        let newPost = Post(creatorID: user.uid, image: imageURLString, userName: userDisplayName)
         FirestoreService.manager.createPost(post: newPost) { (result) in
             self.handlePostResponse(withResult: result)
         }
@@ -119,10 +124,8 @@ class ImageUploadViewController: UIViewController {
                 case .authorized:
                     self?.presentPhotoPickerController()
                 case .denied:
-                    //MARK: TODO - set up more intuitive UI interaction
                     print("Denied photo library permissions")
                 default:
-                    //MARK: TODO - set up more intuitive UI interaction
                     print("No usable status")
                 }
             })
@@ -184,10 +187,28 @@ extension ImageUploadViewController:UIImagePickerControllerDelegate, UINavigatio
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-        guard let selectedImage = info[.originalImage] as? UIImage else {
+        guard let selectedImage = info[.editedImage] as? UIImage else {
             return
         }
+        
         self.image = selectedImage
+        
+        guard let imageData = selectedImage.jpegData(compressionQuality: 0.7) else {
+            return
+        }
+        
+        FirebaseStorageService.manager.storeUserInputImage(image: imageData, completion: { [weak self] (result) in
+                   switch result{
+                   case .success(let url):
+                    print("working")
+                    print(result)
+                       self?.imageURL = url
+                    
+                   case .failure(let error):
+                    print("Notworking")
+                       print(error)
+                   }
+               })
         self.activityIndicator.stopAnimating()
         picker.dismiss(animated: true, completion: nil)
     }

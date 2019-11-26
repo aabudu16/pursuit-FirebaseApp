@@ -21,7 +21,7 @@ class FeedsCollectionViewCell: UICollectionViewCell {
            label.textAlignment = .center
            label.textColor = .white
            label.font = UIFont(name: "Zapf Dingbats", size: 15)
-           label.text = "display name"
+          // label.text = "display name"
            return label
        }()
     
