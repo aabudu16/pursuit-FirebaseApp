@@ -44,8 +44,16 @@ class FeedViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        setupLogoutButton()
     }
     
+    
+    @objc func handleLogoutButton(){
+        print("Logout Pressed")
+    }
+    private func setupLogoutButton(){
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogoutButton))
+    }
     private func setupView(){
         view.backgroundColor = .white
         configureFeedLabelConstraints()

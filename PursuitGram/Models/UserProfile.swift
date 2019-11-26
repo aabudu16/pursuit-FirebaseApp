@@ -39,9 +39,11 @@ struct UserProfile {
         self.photoURL = photoURL
     }
     
+ 
+    
     var fieldsDict: [String: Any] {
         return [
-            "userName": self.userName ?? "",
+            "userName": self.userName ?? " No user name",
             "email": self.email ?? "",
             "photoURL": self.photoURL ?? ""
         ]

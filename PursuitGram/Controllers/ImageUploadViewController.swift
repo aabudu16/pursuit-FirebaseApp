@@ -8,6 +8,7 @@
 
 import UIKit
 import Photos
+import FirebaseAuth
 
 class ImageUploadViewController: UIViewController {
     
@@ -32,7 +33,7 @@ class ImageUploadViewController: UIViewController {
     
     lazy var uploadButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Login", for: .normal)
+        button.setTitle("Post", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont(name: "Verdana-Bold", size: 14)
         button.backgroundColor = #colorLiteral(red: 0.2601475716, green: 0.2609100342, blue: 0.9169666171, alpha: 1)
@@ -67,8 +68,44 @@ class ImageUploadViewController: UIViewController {
     }
     //MARK:-- @objc function
     @objc func handleUploadButton(){
-        print("upload button pressed")
+        guard uploadImage.image != nil, uploadImage.image != UIImage(named: "imagePlaceholder") else {
+            showAlert(with: "Error", and: "Please enter a valid image")
+            return
+        }
+        guard let imageData = image.jpegData(compressionQuality: 0.7) else {
+            return
+        }
+        
+        guard let user = FirebaseAuthService.manager.currentUser else {
+            showAlert(with: "Error", and: "You must be logged in to create a post")
+            return
+        }
+        
+        let newPost = Post(creatorID: user.uid, image: imageData)
+        FirestoreService.manager.createPost(post: newPost) { (result) in
+            self.handlePostResponse(withResult: result)
+        }
     }
+    
+    //MARK: Private methods
+    
+    private func handlePostResponse(withResult result: Result<Void, Error>) {
+        switch result {
+        case .success:
+            showAlert(with: nil, and: "A new post has been added")
+        case let .failure(error):
+            print("An error occurred creating the post: \(error)")
+        }
+    }
+    
+    
+    private func showAlert(with title: String?, and message: String) {
+        let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        present(alertVC, animated: true, completion: nil)
+    }
+    
+    
     
     @objc private func imageViewDoubleTapped(sender:UITapGestureRecognizer) {
         print("pressed")
@@ -114,11 +151,6 @@ class ImageUploadViewController: UIViewController {
         }
     }
     
-    private func showAlert(with title: String, and message: String) {
-        let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        present(alertVC, animated: true, completion: nil)
-    }
     
     //MARK: private constraints
     

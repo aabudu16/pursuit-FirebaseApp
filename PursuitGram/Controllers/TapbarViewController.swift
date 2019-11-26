@@ -12,14 +12,17 @@ class TapbarViewController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-       let feedViewController = FeedViewController()
-        let imageUploadViewController = UINavigationController(rootViewController:  ImageUploadViewController())
-        
-        feedViewController.tabBarItem = UITabBarItem(title: "Feeds", image: UIImage(systemName: "folder"), tag: 0)
-        imageUploadViewController.tabBarItem = UITabBarItem(title: "Upload Image", image: UIImage(systemName: "folder"), tag: 1)
-        let viewControllerList = [ feedViewController, imageUploadViewController]
-        viewControllers = viewControllerList
+       setupTabBarController()
     }
-
+    
+    private func setupTabBarController(){
+        view.backgroundColor = .white
+              let feedViewController =  UINavigationController(rootViewController:  FeedViewController())
+               let imageUploadViewController = UINavigationController(rootViewController:  ImageUploadViewController())
+               
+               feedViewController.tabBarItem = UITabBarItem(title: "Feeds", image: UIImage(systemName: "folder"), tag: 0)
+               imageUploadViewController.tabBarItem = UITabBarItem(title: "Upload Image", image: UIImage(systemName: "folder"), tag: 1)
+               let viewControllerList = [ feedViewController, imageUploadViewController]
+               viewControllers = viewControllerList
+    }
 }

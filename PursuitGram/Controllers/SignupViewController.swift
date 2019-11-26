@@ -122,20 +122,7 @@ class SignUpViewController: UIViewController {
         profileVC.createUserModel.email = email
         profileVC.createUserModel.password = password
              present(profileVC, animated: true, completion: nil)
-//        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-//                             let sceneDelegate = windowScene.delegate as? SceneDelegate, let window = sceneDelegate.window
-//                             else { return }
-//
-//
-//                             UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
-//                                 window.rootViewController = ProfileViewController()
-//                             }, completion: nil)
-//
-             
-//             FirebaseAuthService.manager.createNewUser(email: email.lowercased(), password: password) { [weak self] (result) in
-//                 self?.handleCreateAccountResponse(with: result)
-//             }
-         }
+    }
       
       //MARK: Private Methods
       private func showAlert(with title: String, and message: String) {
@@ -144,32 +131,32 @@ class SignUpViewController: UIViewController {
              present(alertVC, animated: true, completion: nil)
          }
       
-      private func handleCreateAccountResponse(with result: Result<User, Error>) {
-          DispatchQueue.main.async { [weak self] in
-              switch result {
-              case.success(let user):
-              print(user)
-                  guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                      let sceneDelegate = windowScene.delegate as? SceneDelegate, let window = sceneDelegate.window
-                      else { return }
-                  
-                  if FirebaseAuthService.manager.currentUser != nil {
-                      UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
-                          window.rootViewController = ProfileViewController()
-                      }, completion: nil)
-                      
-                  } else {
-                      print("No current user")
-                  }
-                  
-                  
-              case .failure(let error):
-                  self?.showAlert(with: "Error Creating User", and: error.localizedDescription)
-              }
-               
-          }
-      }
-      
+//      private func handleCreateAccountResponse(with result: Result<User, Error>) {
+//          DispatchQueue.main.async { [weak self] in
+//              switch result {
+//              case.success(let user):
+//              print(user)
+//                  guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//                      let sceneDelegate = windowScene.delegate as? SceneDelegate, let window = sceneDelegate.window
+//                      else { return }
+//                  
+//                  if FirebaseAuthService.manager.currentUser != nil {
+//                      UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
+//                          window.rootViewController = ProfileViewController()
+//                      }, completion: nil)
+//                      
+//                  } else {
+//                      print("No current user")
+//                  }
+//                  
+//                  
+//              case .failure(let error):
+//                  self?.showAlert(with: "Error Creating User", and: error.localizedDescription)
+//              }
+//               
+//          }
+//      }
+//      
 
       
       //MARK: UI Setup
