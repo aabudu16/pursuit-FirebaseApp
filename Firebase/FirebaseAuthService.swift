@@ -58,6 +58,13 @@ class FirebaseAuthService {
            }
        }
 
+    func logoutUser(){
+        do{
+           try auth.signOut()
+        }catch let error{
+            print(error)
+        }
+    }
        private init () {}
     
     

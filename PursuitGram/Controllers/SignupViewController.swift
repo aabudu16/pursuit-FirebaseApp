@@ -104,7 +104,7 @@ class SignUpViewController: UIViewController {
          }
       
       @objc func trySignUp() {
-             guard let email = emailTextField.text, let password = passwordTextField.text else {
+        guard let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), let password = passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
                  showAlert(with: "Error", and: "Please fill out all fields.")
                  return
              }
@@ -131,33 +131,6 @@ class SignUpViewController: UIViewController {
              alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
              present(alertVC, animated: true, completion: nil)
          }
-      
-//      private func handleCreateAccountResponse(with result: Result<User, Error>) {
-//          DispatchQueue.main.async { [weak self] in
-//              switch result {
-//              case.success(let user):
-//              print(user)
-//                  guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-//                      let sceneDelegate = windowScene.delegate as? SceneDelegate, let window = sceneDelegate.window
-//                      else { return }
-//                  
-//                  if FirebaseAuthService.manager.currentUser != nil {
-//                      UIView.transition(with: window, duration: 0.3, options: .transitionFlipFromBottom, animations: {
-//                          window.rootViewController = ProfileViewController()
-//                      }, completion: nil)
-//                      
-//                  } else {
-//                      print("No current user")
-//                  }
-//                  
-//                  
-//              case .failure(let error):
-//                  self?.showAlert(with: "Error Creating User", and: error.localizedDescription)
-//              }
-//               
-//          }
-//      }
-//      
 
       
       //MARK: UI Setup

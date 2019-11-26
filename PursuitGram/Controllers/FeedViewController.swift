@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class FeedViewController: UIViewController {
     // enum
@@ -56,7 +57,11 @@ class FeedViewController: UIViewController {
     
         //MARK: objc function
     @objc func handleLogoutButton(){
-        print("Logout Pressed")
+      try?  Auth.auth().signOut()
+        
+        let loginVC = LoginViewController()
+        loginVC.modalPresentationStyle = .fullScreen
+        present(loginVC, animated: true, completion: nil)
     }
     
     @objc func handlePresentingProfileVC(){
