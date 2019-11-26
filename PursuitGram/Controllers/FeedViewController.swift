@@ -59,6 +59,11 @@ class FeedViewController: UIViewController {
         print("Logout Pressed")
     }
     
+    @objc func handlePresentingProfileVC(){
+       let profileVC = ProfileViewController()
+        profileVC.buttonSelection = .updateProfileButtonEnabled
+        self.present(profileVC, animated: true, completion: nil)
+    }
     
         //MARK: private func
     private func getPosts() {
@@ -75,6 +80,8 @@ class FeedViewController: UIViewController {
     
     private func setupLogoutButton(){
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogoutButton))
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "slider.horizontal.3"), style: .plain, target: self, action: #selector(handlePresentingProfileVC))
     }
     private func setupView(){
         view.backgroundColor = .white
@@ -109,8 +116,10 @@ extension FeedViewController: UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collectionIdentifiers.collectionCell.rawValue, for: indexPath) as? FeedsCollectionViewCell else {return UICollectionViewCell()}
         let feed = feeds[indexPath.row]
+        if let userName = FirebaseAuthService.manager.currentUser?.displayName{
+          cell.displayNameLabel.text = userName
+        }
         
-        cell.displayNameLabel.text = "Display Name"
         cell.feedImage.image = UIImage(data: feed.feedImage)
         CustomLayer.shared.createCustomlayer(layer: cell.layer)
         

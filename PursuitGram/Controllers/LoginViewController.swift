@@ -25,7 +25,7 @@ class LoginViewController: UIViewController {
         let label = UILabel()
         label.numberOfLines = 0
         label.text = "Pursuitgram"
-        label.font = UIFont(name: "Verdana-Bold", size: 50)
+        label.font = UIFont(name: "Verdana-Bold", size: 45)
         label.textColor = #colorLiteral(red: 0.2601475716, green: 0.2609100342, blue: 0.9169666171, alpha: 1)
         label.backgroundColor = .clear
         label.textAlignment = .center

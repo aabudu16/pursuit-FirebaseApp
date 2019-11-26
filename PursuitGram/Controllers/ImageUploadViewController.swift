@@ -68,23 +68,24 @@ class ImageUploadViewController: UIViewController {
     }
     //MARK:-- @objc function
     @objc func handleUploadButton(){
-        guard uploadImage.image != nil, uploadImage.image != UIImage(named: "imagePlaceholder") else {
-            showAlert(with: "Error", and: "Please enter a valid image")
-            return
-        }
-        guard let imageData = image.jpegData(compressionQuality: 0.7) else {
-            return
-        }
-        
-        guard let user = FirebaseAuthService.manager.currentUser else {
-            showAlert(with: "Error", and: "You must be logged in to create a post")
-            return
-        }
-        
-        let newPost = Post(creatorID: user.uid, image: imageData)
-        FirestoreService.manager.createPost(post: newPost) { (result) in
-            self.handlePostResponse(withResult: result)
-        }
+//        guard uploadImage.image != nil, uploadImage.image != UIImage(named: "imagePlaceholder") else {
+//            showAlert(with: "Error", and: "Please enter a valid image")
+//            return
+//        }
+//        guard let imageData = image.jpegData(compressionQuality: 0.7) else {
+//            return
+//        }
+//
+//        guard let user = FirebaseAuthService.manager.currentUser else {
+//            showAlert(with: "Error", and: "You must be logged in to create a post")
+//            return
+//        }
+//
+//        let newPost = Post(creatorID: user.uid, image: imageData)
+//        FirestoreService.manager.createPost(post: newPost) { (result) in
+//            self.handlePostResponse(withResult: result)
+//        }
+        print(FirebaseAuthService.manager.currentUser?.displayName)
     }
     
     //MARK: Private methods

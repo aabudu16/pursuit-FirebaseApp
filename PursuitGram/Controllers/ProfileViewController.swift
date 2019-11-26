@@ -11,6 +11,11 @@ import Photos
 import FirebaseAuth
 import Firebase
 
+enum SwitchButtons {
+    case createButtonEnabled
+    case updateProfileButtonEnabled
+}
+
 class ProfileViewController: UIViewController {
     var unwrappedImageURL:URL!
     var userName:String!
@@ -19,8 +24,7 @@ class ProfileViewController: UIViewController {
     var createUserModel:(email:String, password: String) = ("","")
     var settingFromLogin = false
     
-    //MARK: TODO - set up views using autolayout, not frames
-    //MARK: TODO - edit other fields in this VC
+    var buttonSelection = SwitchButtons.createButtonEnabled
     var image = UIImage() {
         didSet {
             self.imageView.image = image
@@ -138,79 +142,95 @@ class ProfileViewController: UIViewController {
             self?.currentUser = result
             self?.handleCreateAccountResponse(with: result)
         }
-}
-
-@objc private func updateButtonPressed(){
-    // guarding against not having a display name and image
-    guard let userName = displayName.text, let imageURL = imageURL else {
-        showAlert(with: "Error", and: "Please a valid image and user name")
-        return
     }
-    self.activityIndicator.startAnimating()
-    FirebaseAuthService.manager.updateUserFields(userName: userName, photoURL: imageURL) { (result) in
-        switch result {
-        case .success():
-            FirestoreService.manager.updateCurrentUser(userName: userName, photoURL: imageURL) { [weak self] (nextResult) in
-                switch nextResult {
-                case .success():
-                    self?.activityIndicator.stopAnimating()
-                    self?.showAlertWithSucessMessage()
-                case .failure(let error):
-                    print(error)
+    
+    @objc private func updateButtonPressed(){
+        // guarding against not having a display name and image
+        guard let userName = displayName.text, let imageURL = imageURL else {
+            showAlert(with: "Error", and: "Please a valid image and user name")
+            return
+        }
+        self.activityIndicator.startAnimating()
+        FirebaseAuthService.manager.updateUserFields(userName: userName, photoURL: imageURL) { (result) in
+            switch result {
+            case .success():
+                FirestoreService.manager.updateCurrentUser(userName: userName, photoURL: imageURL) { [weak self] (nextResult) in
+                    switch nextResult {
+                    case .success():
+                        self?.activityIndicator.stopAnimating()
+                        self?.showAlertWithSucessMessage()
+                    case .failure(let error):
+                        print(error)
+                    }
                 }
+            case .failure(let error):
+                self.showAlert(with: "Error", and: "It seem your image was not save. Please check your image format and try again")
+                self.activityIndicator.stopAnimating()
+                print(error)
             }
-        case .failure(let error):
-            self.showAlert(with: "Error", and: "It seem your image was not save. Please check your image format and try again")
-            self.activityIndicator.stopAnimating()
-            print(error)
         }
     }
-}
-
-
-@objc private func imageViewDoubleTapped(sender:UITapGestureRecognizer) {
-    print("pressed")
-    //MARK: TODO - action sheet with multiple media options
-    switch PHPhotoLibrary.authorizationStatus() {
-    case .notDetermined, .denied, .restricted:
-        PHPhotoLibrary.requestAuthorization({[weak self] status in
-            switch status {
-            case .authorized:
-                self?.presentPhotoPickerController()
-            case .denied:
-                //MARK: TODO - set up more intuitive UI interaction
-                print("Denied photo library permissions")
-            default:
-                //MARK: TODO - set up more intuitive UI interaction
-                print("No usable status")
-            }
-        })
-    default:
-        presentPhotoPickerController()
+    
+    
+    @objc private func imageViewDoubleTapped(sender:UITapGestureRecognizer) {
+        print("pressed")
+        //MARK: TODO - action sheet with multiple media options
+        switch PHPhotoLibrary.authorizationStatus() {
+        case .notDetermined, .denied, .restricted:
+            PHPhotoLibrary.requestAuthorization({[weak self] status in
+                switch status {
+                case .authorized:
+                    self?.presentPhotoPickerController()
+                case .denied:
+                    //MARK: TODO - set up more intuitive UI interaction
+                    print("Denied photo library permissions")
+                default:
+                    //MARK: TODO - set up more intuitive UI interaction
+                    print("No usable status")
+                }
+            })
+        default:
+            presentPhotoPickerController()
+        }
     }
-}
-
-@objc func editButtonPressed(){
-    print(createUserModel)
-    showAlertWithTextField(with: "Edit your display name")
-}
-
-private func setupViews() {
-    setupImageView()
-    profileLabelConstraints()
-    configureDisplayNameConstraints()
-    setupUpdateButton()
-    configureEditDisplayNameConstraints()
-    configureCreateButtonConstraints()
-    configureActivityIndicatorConstraints()
-}
-//MARK: private function
-
+    
+    @objc func editButtonPressed(){
+        print(createUserModel)
+        showAlertWithTextField(with: "Edit your display name")
+    }
+    
+    //MARK: private function
+    
+    private func switchButtonSelection(){
+        switch buttonSelection{
+        case .createButtonEnabled:
+            updateProfileButton.isEnabled = false
+            updateProfileButton.isHidden = true
+            createButton.isHidden = false
+            createButton.isEnabled = true
+        case .updateProfileButtonEnabled:
+            updateProfileButton.isEnabled = true
+            updateProfileButton.isHidden = false
+            createButton.isHidden = true
+            createButton.isEnabled = false
+        }
+    }
+    private func setupViews() {
+        setupImageView()
+        profileLabelConstraints()
+        configureDisplayNameConstraints()
+        setupUpdateButton()
+        configureEditDisplayNameConstraints()
+        configureCreateButtonConstraints()
+        configureActivityIndicatorConstraints()
+        switchButtonSelection()
+    }
+    
     private func setSceneDelegateInitialVC(with result: Result<User, Error>) {
         DispatchQueue.main.async { [weak self] in
             switch result {
             case.success(let user):
-            print(user)
+                print(user)
                 guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                     let sceneDelegate = windowScene.delegate as? SceneDelegate, let window = sceneDelegate.window
                     else { return }
@@ -228,38 +248,52 @@ private func setupViews() {
             case .failure(let error):
                 self?.showAlert(with: "Error Creating User", and: error.localizedDescription)
             }
-             
+            
         }
     }
     
-
     
-private func handleCreateAccountResponse(with result: Result<User, Error>) {
-//    DispatchQueue.main.async { [weak self] in
+    
+    private func handleCreateAccountResponse(with result: Result<User, Error>) {
+        //    DispatchQueue.main.async { [weak self] in
         switch result {
         case .success(let user):
             FirestoreService.manager.createAppUser(user: UserProfile(from: user)) { [weak self] newResult in
                 guard FirebaseAuthService.manager.currentUser != nil else {
-                           print("cant create user")
-                           return
-                       }
-
-                               // handles creating and updaring current user profile
+                    print("cant create user")
+                    return
+                }
+                
+                // handles creating and updaring current user profile
                 FirestoreService.manager.updateCurrentUser(userName: self?.userName, photoURL: self?.imageURL) { [weak self] (nextResult) in
-                                   switch nextResult {
-                                   case .success():
-                                    self?.setSceneDelegateInitialVC(with: result)
-                                       //stop activity indicator
-                                       self?.activityIndicator.stopAnimating()
-                                       print(self?.userName)
-                                       print(self?.imageURL?.absoluteString)
-                                   case .failure(let error):
-                                       self?.showAlert(with: "Error", and: "It seem your image or user name was not save. Please input a valid  user name, check your image format and try again")
-                                       self?.activityIndicator.stopAnimating()
-                                       print(error)
-                                       return
-                                   }
-                               }
+                    switch nextResult {
+                    case .success():
+                        FirebaseAuthService.manager.updateUserFields(userName: self?.userName, photoURL: self?.imageURL) { (updateUser) in
+            
+                            switch updateUser{
+                            case .failure(let error):
+                                self?.showAlert(with: "Error", and: "Problem updating your information. please try again.. Error \(error)")
+                            case .success():
+                               self?.setSceneDelegateInitialVC(with: result )
+                            }
+                            
+                            
+                            
+                            
+                            
+                            
+                        }
+                        //stop activity indicator
+                        self?.activityIndicator.stopAnimating()
+                        print(self?.userName)
+                        print(self?.imageURL?.absoluteString)
+                    case .failure(let error):
+                        self?.showAlert(with: "Error", and: "It seem your image or user name was not save. Please input a valid  user name, check your image format and try again")
+                        self?.activityIndicator.stopAnimating()
+                        print(error)
+                        return
+                    }
+                }
                 print(newResult)
                 self?.view.backgroundColor = .green
             }
@@ -267,110 +301,110 @@ private func handleCreateAccountResponse(with result: Result<User, Error>) {
             self.showAlert(with: "Error creating user", and: "An error occured while creating new account \(error)")
         }
     }
-//}
-
-private func showAlertWithSucessMessage(){
-    let alert = UIAlertController(title: "Sussess", message: "You have updated your profile", preferredStyle: .alert)
-    let ok = UIAlertAction(title: "OK", style: .default) { (dismiss) in
-        self.handleNavigationAwayFromVCAfterUpdating()
+    //}
+    
+    private func showAlertWithSucessMessage(){
+        let alert = UIAlertController(title: "Sussess", message: "You have updated your profile", preferredStyle: .alert)
+        let ok = UIAlertAction(title: "OK", style: .default) { (dismiss) in
+            self.handleNavigationAwayFromVCAfterUpdating()
+        }
+        alert.addAction(ok)
+        present(alert, animated: true, completion: nil)
     }
-    alert.addAction(ok)
-    present(alert, animated: true, completion: nil)
-}
-private func showAlert(with title: String, and message: String) {
-    let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
-    alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-    present(alertVC, animated: true, completion: nil)
-}
-
-private func showAlertWithTextField(with message: String) {
-    let alertVC = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-    alertVC.addTextField { (textField) in
-        textField.placeholder = "Title"
-    }
-    let save = UIAlertAction(title: "Save", style: .default) { (action) in
-        guard let text = alertVC.textFields?[0].text else {return}
-        self.displayName.text = text
+    private func showAlert(with title: String, and message: String) {
+        let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        present(alertVC, animated: true, completion: nil)
     }
     
-    let cancel = UIAlertAction(title: "Cancel", style: .default, handler: nil)
-    alertVC.addAction(save)
-    alertVC.addAction(cancel)
-    present(alertVC, animated: true, completion: nil)
-}
-
-private func presentPhotoPickerController() {
-    DispatchQueue.main.async{
-        let imagePickerViewController = UIImagePickerController()
-        imagePickerViewController.delegate = self
-        imagePickerViewController.sourceType = .photoLibrary
-        imagePickerViewController.allowsEditing = true
-        imagePickerViewController.mediaTypes = ["public.image", "public.movie"]
-        self.present(imagePickerViewController, animated: true, completion: nil)
+    private func showAlertWithTextField(with message: String) {
+        let alertVC = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        alertVC.addTextField { (textField) in
+            textField.placeholder = "Title"
+        }
+        let save = UIAlertAction(title: "Save", style: .default) { (action) in
+            guard let text = alertVC.textFields?[0].text else {return}
+            self.displayName.text = text
+        }
+        
+        let cancel = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+        alertVC.addAction(save)
+        alertVC.addAction(cancel)
+        present(alertVC, animated: true, completion: nil)
     }
-}
-
-private func handleNavigationAwayFromVCAfterUpdating() {
-    if settingFromLogin {
-        self.dismiss(animated: true, completion: nil)
+    
+    private func presentPhotoPickerController() {
+        DispatchQueue.main.async{
+            let imagePickerViewController = UIImagePickerController()
+            imagePickerViewController.delegate = self
+            imagePickerViewController.sourceType = .photoLibrary
+            imagePickerViewController.allowsEditing = true
+            imagePickerViewController.mediaTypes = ["public.image", "public.movie"]
+            self.present(imagePickerViewController, animated: true, completion: nil)
+        }
     }
-}
-
-
-//MARK: private constraints function
-private func configureDisplayNameConstraints(){
-    view.addSubview(displayName)
-    displayName.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([displayName.leadingAnchor.constraint(equalTo: self.view.leadingAnchor), displayName.trailingAnchor.constraint(equalTo: self.view.trailingAnchor), displayName.heightAnchor.constraint(equalToConstant: 50), displayName.topAnchor.constraint(equalTo: self.imageView.bottomAnchor, constant: 20)])
-}
-
-private func configureEditDisplayNameConstraints(){
-    self.view.addSubview(editDisplayName)
-    editDisplayName.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([editDisplayName.bottomAnchor.constraint(equalTo: self.displayName.topAnchor, constant: 25), editDisplayName.leadingAnchor.constraint(equalTo: self.view.centerXAnchor, constant:  80), editDisplayName.heightAnchor.constraint(equalToConstant: 20), editDisplayName.widthAnchor.constraint(equalToConstant: 20)])
-}
-
-private func configureCreateButtonConstraints(){
-    self.view.addSubview(createButton)
-    createButton.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([createButton.topAnchor.constraint(equalTo: self.displayName.bottomAnchor, constant:  20),createButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant:  100),createButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant:  -100), createButton.heightAnchor.constraint(equalToConstant: 30)])
-}
-
-private func profileLabelConstraints(){
-    view.addSubview(profileLabel)
-    profileLabel.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([profileLabel.bottomAnchor.constraint(equalTo: self.imageView.topAnchor, constant:  -20), profileLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor), profileLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor), profileLabel.heightAnchor.constraint(equalToConstant: 100)])
-}
-private func setupImageView() {
-    view.addSubview(imageView)
     
-    imageView.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([
-        imageView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
-        imageView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-        imageView.heightAnchor.constraint(equalToConstant: self.view.bounds.width / 2),
-        imageView.widthAnchor.constraint(equalToConstant: self.view.bounds.width / 2)
-    ])
-}
-
-
-private func setupUpdateButton() {
-    view.addSubview(updateProfileButton)
+    private func handleNavigationAwayFromVCAfterUpdating() {
+        if settingFromLogin {
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
     
-    updateProfileButton.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([
-        updateProfileButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-        updateProfileButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-        updateProfileButton.heightAnchor.constraint(equalToConstant: 30),
-        updateProfileButton.widthAnchor.constraint(equalToConstant: view.bounds.width / 3)
-    ])
-}
-
-private func configureActivityIndicatorConstraints(){
-    imageView.addSubview(activityIndicator)
-    activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([activityIndicator.topAnchor.constraint(equalTo: self.imageView.topAnchor), activityIndicator.leadingAnchor.constraint(equalTo: self.imageView.leadingAnchor) ,activityIndicator.trailingAnchor.constraint(equalTo: self.imageView.trailingAnchor) ,activityIndicator.bottomAnchor.constraint(equalTo: self.imageView.bottomAnchor)])
-}
+    
+    //MARK: private constraints function
+    private func configureDisplayNameConstraints(){
+        view.addSubview(displayName)
+        displayName.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([displayName.leadingAnchor.constraint(equalTo: self.view.leadingAnchor), displayName.trailingAnchor.constraint(equalTo: self.view.trailingAnchor), displayName.heightAnchor.constraint(equalToConstant: 50), displayName.topAnchor.constraint(equalTo: self.imageView.bottomAnchor, constant: 20)])
+    }
+    
+    private func configureEditDisplayNameConstraints(){
+        self.view.addSubview(editDisplayName)
+        editDisplayName.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([editDisplayName.bottomAnchor.constraint(equalTo: self.displayName.topAnchor, constant: 25), editDisplayName.leadingAnchor.constraint(equalTo: self.view.centerXAnchor, constant:  80), editDisplayName.heightAnchor.constraint(equalToConstant: 20), editDisplayName.widthAnchor.constraint(equalToConstant: 20)])
+    }
+    
+    private func configureCreateButtonConstraints(){
+        self.view.addSubview(createButton)
+        createButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([createButton.topAnchor.constraint(equalTo: self.displayName.bottomAnchor, constant:  20),createButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant:  100),createButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant:  -100), createButton.heightAnchor.constraint(equalToConstant: 30)])
+    }
+    
+    private func profileLabelConstraints(){
+        view.addSubview(profileLabel)
+        profileLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([profileLabel.bottomAnchor.constraint(equalTo: self.imageView.topAnchor, constant:  -20), profileLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor), profileLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor), profileLabel.heightAnchor.constraint(equalToConstant: 100)])
+    }
+    private func setupImageView() {
+        view.addSubview(imageView)
+        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+            imageView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            imageView.heightAnchor.constraint(equalToConstant: self.view.bounds.width / 2),
+            imageView.widthAnchor.constraint(equalToConstant: self.view.bounds.width / 2)
+        ])
+    }
+    
+    
+    private func setupUpdateButton() {
+        view.addSubview(updateProfileButton)
+        
+        updateProfileButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            updateProfileButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            updateProfileButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            updateProfileButton.heightAnchor.constraint(equalToConstant: 30),
+            updateProfileButton.widthAnchor.constraint(equalToConstant: view.bounds.width / 3)
+        ])
+    }
+    
+    private func configureActivityIndicatorConstraints(){
+        imageView.addSubview(activityIndicator)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([activityIndicator.topAnchor.constraint(equalTo: self.imageView.topAnchor), activityIndicator.leadingAnchor.constraint(equalTo: self.imageView.leadingAnchor) ,activityIndicator.trailingAnchor.constraint(equalTo: self.imageView.trailingAnchor) ,activityIndicator.bottomAnchor.constraint(equalTo: self.imageView.bottomAnchor)])
+    }
 }
 
 extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {

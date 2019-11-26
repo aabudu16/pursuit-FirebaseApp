@@ -121,6 +121,7 @@ class SignUpViewController: UIViewController {
          let profileVC = ProfileViewController()
         profileVC.createUserModel.email = email
         profileVC.createUserModel.password = password
+        profileVC.buttonSelection = .createButtonEnabled
              present(profileVC, animated: true, completion: nil)
     }
       
