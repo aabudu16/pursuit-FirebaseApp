@@ -41,16 +41,38 @@ class FeedViewController: UIViewController {
         return label
     }()
     
+    
+        //MARK: UI LifeCylce
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         setupLogoutButton()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getPosts()
+    }
     
+        //MARK: objc function
     @objc func handleLogoutButton(){
         print("Logout Pressed")
     }
+    
+    
+        //MARK: private func
+    private func getPosts() {
+           FirestoreService.manager.getAllPosts(sortingCriteria: .fromNewestToOldest) { (result) in
+               switch result {
+               case .success(let posts):
+                   self.feeds = posts
+               case .failure(let error):
+                   print("error getting posts \(error)")
+               }
+           }
+       }
+    
+    
     private func setupLogoutButton(){
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogoutButton))
     }
@@ -81,14 +103,15 @@ extension FeedViewController: UICollectionViewDelegate{
 }
 extension FeedViewController: UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 16
+        return feeds.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collectionIdentifiers.collectionCell.rawValue, for: indexPath) as? FeedsCollectionViewCell else {return UICollectionViewCell()}
+        let feed = feeds[indexPath.row]
         
-        cell.displayNameLabel.text = "Display label"
-        cell.feedImage.image = UIImage(systemName: "photo")
+        cell.displayNameLabel.text = "Display Name"
+        cell.feedImage.image = UIImage(data: feed.feedImage)
         CustomLayer.shared.createCustomlayer(layer: cell.layer)
         
         return cell
