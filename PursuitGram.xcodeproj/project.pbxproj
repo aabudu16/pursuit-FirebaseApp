@@ -15,7 +15,6 @@
 		858A98A023886F890051AF45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 858A989F23886F890051AF45 /* Assets.xcassets */; };
 		858A98A323886F890051AF45 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 858A98A123886F890051AF45 /* LaunchScreen.storyboard */; };
 		858A98AE23886F890051AF45 /* PursuitGramTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98AD23886F890051AF45 /* PursuitGramTests.swift */; };
-		858A98B92388796E0051AF45 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 858A98B82388796E0051AF45 /* GoogleService-Info.plist */; };
 		858A98BD238879F00051AF45 /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98BB238879F00051AF45 /* FirebaseAuthService.swift */; };
 		858A98BE238879F00051AF45 /* FirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98BC238879F00051AF45 /* FirebaseService.swift */; };
 		858A98C023887C2E0051AF45 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858A98BF23887C2E0051AF45 /* SignupViewController.swift */; };
@@ -57,7 +56,6 @@
 		858A98A923886F890051AF45 /* PursuitGramTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PursuitGramTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		858A98AD23886F890051AF45 /* PursuitGramTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PursuitGramTests.swift; sourceTree = "<group>"; };
 		858A98AF23886F890051AF45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		858A98B82388796E0051AF45 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		858A98BB238879F00051AF45 /* FirebaseAuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
 		858A98BC238879F00051AF45 /* FirebaseService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseService.swift; sourceTree = "<group>"; };
 		858A98BF23887C2E0051AF45 /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
@@ -143,7 +141,6 @@
 				858A989F23886F890051AF45 /* Assets.xcassets */,
 				858A98A123886F890051AF45 /* LaunchScreen.storyboard */,
 				858A98A423886F890051AF45 /* Info.plist */,
-				858A98B82388796E0051AF45 /* GoogleService-Info.plist */,
 			);
 			path = PursuitGram;
 			sourceTree = "<group>";
@@ -304,7 +301,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				858A98A323886F890051AF45 /* LaunchScreen.storyboard in Resources */,
-				858A98B92388796E0051AF45 /* GoogleService-Info.plist in Resources */,
 				858A98A023886F890051AF45 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

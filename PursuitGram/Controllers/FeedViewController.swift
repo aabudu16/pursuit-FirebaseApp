@@ -110,6 +110,7 @@ class FeedViewController: UIViewController {
 extension FeedViewController: UICollectionViewDelegate{
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let feedDetailedVc = FeedDetailedViewController()
+        feedDetailedVc.feed = feeds[indexPath.item]
         navigationController?.pushViewController(feedDetailedVc, animated: true)
     }
 }

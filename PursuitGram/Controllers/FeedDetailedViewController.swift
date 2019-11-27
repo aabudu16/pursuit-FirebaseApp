@@ -18,11 +18,13 @@ class FeedDetailedViewController: UIViewController {
                 case .failure(let error):
                     print(error)
                 case .success(let image):
-                    self.feedDetailImage.image = image
+                    DispatchQueue.main.async {
+                         self.feedDetailImage.image = image
+                    }
                 }
             }
             
-            displayNameLabel.text = "Submitted by \("DisplayName")"
+            displayNameLabel.text = "Submitted by \(feed.userName)"
             dateLabel.text = "Created at: \(String(describing: feed.dateCreated))"
             
         }
