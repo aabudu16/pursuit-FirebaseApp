@@ -16,6 +16,8 @@ enum SwitchButtons {
     case updateProfileButtonEnabled
 }
 
+
+
 class ProfileViewController: UIViewController {
     
     var unwrappedImageURL:URL!
@@ -216,6 +218,8 @@ class ProfileViewController: UIViewController {
             createButton.isEnabled = false
         }
     }
+    
+
     private func setupViews() {
         setupImageView()
         profileLabelConstraints()

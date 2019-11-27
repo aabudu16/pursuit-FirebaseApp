@@ -95,12 +95,12 @@ class SignUpViewController: UIViewController {
     
       @objc func validateFields() {
              guard emailTextField.hasText, passwordTextField.hasText else {
-                 createButton.backgroundColor = UIColor(red: 255/255, green: 67/255, blue: 0/255, alpha: 0.5)
+                 createButton.backgroundColor = #colorLiteral(red: 0.3629951477, green: 0.4371426404, blue: 0.9123402238, alpha: 1)
                  createButton.isEnabled = false
                  return
              }
              createButton.isEnabled = true
-             createButton.backgroundColor = UIColor(red: 255/255, green: 67/255, blue: 0/255, alpha: 1)
+             createButton.backgroundColor = #colorLiteral(red: 0.2334540784, green: 0.2368975878, blue: 0.8274126649, alpha: 1)
          }
       
       @objc func trySignUp() {

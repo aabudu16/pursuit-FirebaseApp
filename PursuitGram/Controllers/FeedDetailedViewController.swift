@@ -25,7 +25,11 @@ class FeedDetailedViewController: UIViewController {
             }
             
             displayNameLabel.text = "Submitted by \(feed.userName)"
-            dateLabel.text = "Created at: \(String(describing: feed.dateCreated))"
+            
+            guard let dateCreated = feed.dateCreated else{
+                return
+            }
+            dateLabel.text = "Created at: \(dateCreated)"
             
         }
     }
