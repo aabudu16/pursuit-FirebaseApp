@@ -32,13 +32,6 @@ class LoginViewController: UIViewController {
         return label
     }()
     
-    lazy var logoImage:UIImageView = {
-        let image = UIImageView()
-        image.image = UIImage(named: "pursuit-logo")
-        image.contentMode = .scaleAspectFit
-        return image
-    }()
-    
     lazy var emailTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Enter Email"
@@ -223,8 +216,6 @@ class LoginViewController: UIViewController {
         setupLogoLabel()
         setupCreateAccountButton()
         setupLoginStackView()
-        setupLogoImageConstraints()
-        
     }
     
     private func configureContainerviewConstraints(){
@@ -274,11 +265,6 @@ class LoginViewController: UIViewController {
             createAccountButton.heightAnchor.constraint(equalToConstant: 50)])
     }
     
-    private func setupLogoImageConstraints(){
-        view.addSubview(logoImage)
-        logoImage.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([logoImage.topAnchor.constraint(equalTo: logoLabel.bottomAnchor, constant: 60), logoImage.leadingAnchor.constraint(equalTo: self.view.leadingAnchor), logoImage.trailingAnchor.constraint(equalTo: self.view.trailingAnchor), logoImage.heightAnchor.constraint(equalToConstant: 250)])
-    }
 }
 
 extension LoginViewController:UITextFieldDelegate{
